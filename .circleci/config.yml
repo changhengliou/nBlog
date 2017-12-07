@@ -1,0 +1,57 @@
+version: 2
+general:
+    branches:
+        only:
+            - circle # list of branches to build
+jobs:
+    build:
+        working_directory: ~/app
+        docker:
+            - image: circleci/node:9.2.0
+              environment:
+                    NODE_ENV: development
+            - image: circleci/mongo:3.5.13-jessie-ram
+        steps:
+            - checkout
+            - setup_remote_docker
+            - run:
+                name: Unit test in the docker container
+                command: docker-compose -f docker-compose-test.yml run app
+            
+            - store_artifacts:
+                path: /tmp/test-results
+                destination: raw-test-output
+
+            - store_test_results:
+                path: /tmp/test-results
+    deploy:
+        working_directory: ~/app
+        docker:
+            - image: circleci/python:3.6.3-jessie-node
+        steps:
+            - checkout
+            - run:
+                name: install aws cli
+                command: sudo pip install awsebcli
+            - run:
+                name: setup aws config
+                command: |
+                    set -x && \
+                    set -e && \
+                    mkdir /home/circleci/.aws && \
+                    touch /home/circleci/.aws/config && \
+                    chmod 600 /home/circleci/.aws/config && \
+                    echo "[profile eb-cli]" > /home/circleci/.aws/config && \
+                    echo "aws_access_key_id=$AWS_ACCESS_KEY_ID" >> /home/circleci/.aws/config && \
+                    echo "aws_secret_access_key=$AWS_SECRET_ACCESS_KEY" >> /home/circleci/.aws/config
+            - run:
+                name: deploy to aws
+                command: eb deploy
+workflows:
+    version: 2
+    build_test_and_deploy:
+        jobs:
+            - build
+            - deploy:
+                requires:
+                    - build

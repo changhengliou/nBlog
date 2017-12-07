@@ -1,0 +1,82 @@
+{
+    "name": "n-Blog",
+    "private": true,
+    "version": "0.0.0",
+    "scripts": {
+        "start": "nodemon ./app/app.js",
+        "test": "jest",
+        "dev": "$(npm bin)/nodemon ./app/app.js --exec $(npm bin)/babel-node ./app/app.js",
+        "build": "webpack --config=webpack.config.vendor.js --env.prod && webpack --config=webpack.config.js --env.prod",
+        "buildCli": "webpack --config=webpack.config.js",
+        "devwebpack": "webpack-dev-server"
+    },
+    "jest": {
+        "cacheDirectory": "./tmp/cached",
+        "collectCoverageFrom": [
+            "<rootDir>/app/*.{js,jsx}",
+            "!**/node_modules/**",
+            "!**/vendor/**"
+        ],
+        "coveragePathIgnorePatterns": [
+            " <rootDir>/app/wwwroot/",
+            " <rootDir>/node_modules/"
+        ],
+        "moduleNameMapper": {
+            "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
+            "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js"
+        }
+    },
+    "dependencies": {
+        "autoprefixer": "^7.1.6",
+        "babel-cli": "^6.26.0",
+        "babel-core": "^6.26.0",
+        "babel-jest": "^21.2.0",
+        "babel-loader": "^7.1.2",
+        "babel-plugin-transform-react-constant-elements": "^6.23.0",
+        "babel-plugin-transform-react-inline-elements": "^6.22.0",
+        "babel-plugin-transform-runtime": "^6.23.0",
+        "babel-preset-env": "^1.6.1",
+        "babel-preset-react": "^6.24.1",
+        "babel-preset-stage-0": "^6.24.1",
+        "babel-register": "^6.26.0",
+        "babel-runtime": "^6.26.0",
+        "body-parser": "^1.18.2",
+        "bootstrap": "^3.3.7",
+        "clean-webpack-plugin": "^0.1.17",
+        "cookie-parser": "^1.4.3",
+        "core-js": "^2.5.1",
+        "css-loader": "0.28.7",
+        "enzyme": "^3.2.0",
+        "express": "^4.16.2",
+        "express-handlebars": "^3.0.0",
+        "extract-text-webpack-plugin": "3.0.2",
+        "file-loader": "1.1.5",
+        "history": "4.7.2",
+        "jest": "^21.2.1",
+        "json-loader": "0.5.7",
+        "mongoose": "^4.13.5",
+        "node-noop": "1.0.0",
+        "nodemon": "^1.12.1",
+        "postcss-loader": "^2.0.9",
+        "prop-types": "^15.6.0",
+        "react": "16.1.1",
+        "react-dom": "16.1.1",
+        "react-hot-loader": "3.1.2",
+        "react-redux": "5.0.6",
+        "react-router-dom": "4.2.2",
+        "react-router-redux": "5.0.0-alpha.8",
+        "react-test-renderer": "^16.2.0",
+        "redux": "3.7.2",
+        "redux-logger": "^3.0.6",
+        "redux-thunk": "2.2.0",
+        "style-loader": "0.9.0",
+        "superagent": "^3.8.1",
+        "supertest": "^3.0.0",
+        "url-loader": "0.6.2",
+        "webfontloader": "^1.6.28",
+        "webpack": "3.8.1",
+        "webpack-env": "0.8.0",
+        "webpack-hot-middleware": "2.20.0",
+        "webpack-merge": "^4.1.1"
+    }
+}

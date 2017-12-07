@@ -1,0 +1,51 @@
+version: '3'
+
+services:
+    app:
+        image: app
+        build: 
+            context: .
+            dockerfile: Dockerfile
+        environment: 
+            NODE_ENV: development
+        command: ["yarn", "run", "dev"]
+        volumes:
+            - ./app/:/usr/local/n-blog/app/
+        networks:
+            back:
+                ipv4_address: 172.16.238.10 
+        ports:
+            - 5000:5000
+        depends_on:
+            - mongodb
+    mongodb:
+        image: mongo:3.5.13-jessie
+        volumes:
+            - ./db:/data/db
+        networks: 
+            back:
+                ipv4_address: 172.16.238.5
+        ports:
+            - 27017:27017
+        restart: always
+    nginx:
+        image: nginx:1.13.7-alpine
+        volumes:
+            - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+            - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+            - ./nginx/log:/var/log/nginx/
+        networks: 
+            - back
+            - front
+        ports:
+            - 8000:80
+        restart: always
+networks:
+    front:
+        driver: bridge
+    back:
+        driver: bridge
+        ipam:
+            driver: default
+            config:
+                - subnet: 172.16.238.0/24
