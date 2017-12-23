@@ -1,7 +1,7 @@
-import index from './index';
+import post from './post';
 import account from './account';
 
 export default {
-    index: index,
+    post: post,
     account: account
 }

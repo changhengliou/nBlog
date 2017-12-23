@@ -20,7 +20,7 @@ class Counter extends React.Component {
         }, 5);
     }
 
-    componentWillMount(){
+    componentDidMount(){
         this.loading();
     }
 
@@ -29,7 +29,7 @@ class Counter extends React.Component {
             <div>
                 <PageLoadBar progress={this.state.progress}/>
                 <h1>Counter</h1>
-                <p>This is a simple example of a React component.</p>
+                <p>This is a simple react Component.....</p>
                 <p>Current count: <strong>{ this.props.count }</strong></p>
                 <button className="btn btn-default" onClick={ () => { this.props.increment() } }>Increment</button>
             </div>

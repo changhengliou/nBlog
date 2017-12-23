@@ -28,6 +28,11 @@ services:
         ports:
             - 27017:27017
         restart: always
+    redis:
+        image: redis:4.0.6-alpine
+        networks:
+            back:
+                ipv4_address: 172.16.238.4
     nginx:
         image: nginx:1.13.7-alpine
         volumes:

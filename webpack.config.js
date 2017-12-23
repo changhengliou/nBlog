@@ -11,8 +11,8 @@ module.exports = (env) => {
         stats: { modules: false },
         resolve: { extensions: ['.js', '.jsx'] },
         output: {
-            filename: '[name].js',
-            publicPath: 'dist/' // Webpack dev middleware, if enabled, handles requests for this URL prefix
+            filename: isDevBuild ? '[name].js' : '[name][chunkhash].js',
+            publicPath: '/dist/' 
         },
         module: {
             rules: [{ 
@@ -48,7 +48,9 @@ module.exports = (env) => {
 
     const clientBundleConfig = merge(sharedConfig(), {
         entry: { 
-            'main-client': clientBundleEntryPoint,
+            'main-client':  clientBundleEntryPoint,
+            // isDevBuild ? ['react-hot-loader/patch', 'webpack-hot-middleware/client', clientBundleEntryPoint] :
+            //                             clientBundleEntryPoint,
             'preload': clientPreloadEntryPoint
         },
         module: {
@@ -80,6 +82,8 @@ module.exports = (env) => {
                 manifest: require('./app/wwwroot/dist/vendor-manifest.json')
             })
         ].concat(isDevBuild ? [
+            // new webpack.HotModuleReplacementPlugin(),
+            // new webpack.NoEmitOnErrorsPlugin(),
             new webpack.SourceMapDevToolPlugin({
                 filename: '[file].map', 
                 moduleFilenameTemplate: path.relative(clientBundleOutputDir, '[resourcePath]') // Point sourcemap entries to the original file locations on disk
@@ -102,7 +106,7 @@ module.exports = (env) => {
         ],
         output: {
             libraryTarget: 'commonjs',
-            path: serverBundleOutputDir
+            path: serverBundleOutputDir,
         },
         target: 'node',
         devtool: 'inline-source-map'

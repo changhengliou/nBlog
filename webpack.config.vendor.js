@@ -35,6 +35,7 @@ module.exports = (env) => {
                 'redux',
                 'redux-thunk',
                 'react-router-redux',
+                'prop-types',
             ],
         },
         output: {
