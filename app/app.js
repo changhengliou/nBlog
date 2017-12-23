@@ -1,23 +1,11 @@
 import express from 'express';
-import {
-    config,
-    connectionString
-} from './config/config';
-import mongoose from 'mongoose';
-
-
-mongoose.connect(connectionString, {
-    useMongoClient: true
-});
-const db = mongoose.connection;
-db.on('error', () => {
-    // throw new Error(`unable to connect to database at ${connectionString}`);
-});
+import { init } from './config/init';
+import Config from './config/config';
 
 const app = express();
 
-config(app);
+init(app);
 
-app.listen(5000, () => {
-    console.log('listen on port 5000.')
+app.listen(Config.LISTEN_PORT, () => {
+    console.log(`listen on port ${Config.LISTEN_PORT}.`)
 });

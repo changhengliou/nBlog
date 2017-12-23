@@ -1,7 +1,11 @@
 import * as Counter from './CounterStore';
-import * as About from './AboutStore';
+import * as Post from './PostStore';
+import * as DashBoard from './DashBoardStore';
+import * as Setting from './SettingStore';
 
 export const reducers = {
     counter: Counter.reducer,
-    about: About.reducer
+    dashboard: DashBoard.reducer,
+    post: Post.reducer,
+    setting: Setting.reducer
 };

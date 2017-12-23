@@ -14,20 +14,23 @@ const spaRouterMiddleware = (req, res, next) => {
     
     // Prepare an instance of the application and perform an inital render that will
     // cause any async tasks (e.g., data access) to begin
-    const routerContext = {};
+    const routerContext = { statusCode: 200, requestUrl: req.url };
     const app = (
         <Provider store={ store }>
-            <StaticRouter basename={ '/' } context={ routerContext } location={ req.url } children={ routes } />
+            <StaticRouter context={ routerContext } location={ req.url } children={ routes }/>
         </Provider>
     );
-    const html = renderToString(app);
-    
-    console.log(routerContext);
-    
-    if (routerContext.url) res.redirect(302, routerContext.url);
-    else {   
-        console.log(matchPath(req.url, { pathname: '/about' }), routerContext);
 
+    const html = renderToString(app);
+
+    if (routerContext.url) 
+        res.redirect(302, routerContext.url);
+    else if (routerContext.statusCode >= 400) {
+        res.status(routerContext.statusCode).render('index', { helpers: {
+            app: html
+        }})
+    }
+    else {   
         res.render('index', { helpers: {
             app: html,
             footer: `<script>window.initialReduxState=${JSON.stringify(store.getState())}</script>`

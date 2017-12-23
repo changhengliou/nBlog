@@ -5,7 +5,7 @@ import './css/site.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { AppContainer } from 'react-hot-loader';
+// import { AppContainer } from 'react-hot-loader';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux';
 import { createBrowserHistory } from 'history';
@@ -22,7 +22,7 @@ const history = createBrowserHistory();
 const initialState = window.initialReduxState;
 const store = configureStore(history, initialState);
 
-(function renderApp() {
+function renderApp() {
     load({
         google: {
             families: ['Ubuntu']
@@ -33,14 +33,15 @@ const store = configureStore(history, initialState);
         }
     });
     ReactDOM.hydrate(
-        <AppContainer>
+        // <AppContainer>
             <Provider store={ store }>
                 <ConnectedRouter history={ history } children={ routes } />
-            </Provider>
-        </AppContainer>,
+            </Provider>,
+        // </AppContainer>,
         document.getElementById('react-app')
     );
-})();
+};
+renderApp();
 
 // Allow Hot Module Replacement
 if (module.hot) {

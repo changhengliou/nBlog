@@ -2,14 +2,21 @@ import * as React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import Layout from './components/Layout';
 import Counter from './components/Counter';
-import About from './components/About';
+import Post from './components/Post';
 import NotFound from './components/NotFound';
+import DashBoard from './components/DashBoard';
+import SignIn from './components/SignIn';
+import Setting from './components/Setting';
 
 export const routes = (
     <Layout>
         <Switch>
             <Route exact path='/' component={ Counter } />
-            <Route path='/about' component={ About }/>
+            <Route exact path='/counter' component={ Counter } />
+            <Route exact path='/:userId/me' component={ DashBoard } />
+            <Route path='/post' component={ Post }/>
+            <Route exact path='/account' component={ Setting } />
+            <Route exact path='/signin' component={ SignIn } />
             <Route component={ NotFound }/>
         </Switch>
     </Layout>
