@@ -11,7 +11,7 @@ module.exports = (env) => {
         stats: { modules: false },
         resolve: { extensions: ['.js', '.jsx'] },
         output: {
-            filename: isDevBuild ? '[name].js' : '[name][chunkhash].js',
+            filename: '[name].js',//isDevBuild ? '[name].js' : '[name][chunkhash].js',
             publicPath: '/dist/' 
         },
         module: {
@@ -89,7 +89,7 @@ module.exports = (env) => {
                 moduleFilenameTemplate: path.relative(clientBundleOutputDir, '[resourcePath]') // Point sourcemap entries to the original file locations on disk
             })
         ] : [
-            new webpack.optimize.UglifyJsPlugin()
+            // new webpack.optimize.UglifyJsPlugin()
         ])
     });
 
