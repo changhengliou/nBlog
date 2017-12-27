@@ -24,23 +24,31 @@ div.signin-intro-text {
     font-size: 1.3em;
 }
 
-div.form-title {
-    font-size: 1.6em;
+form .form-title {
     color: #fff;
-    text-align: center;
-    margin-bottom: 0.3em;
-    z-index: 1;
+    text-align: left;
+    margin: 0.3em 0;
 }
 
 form div.form-panel {
     position: absolute;
-    top: 40%;
+    top: 38%;
     right: 8%;
     margin-left: 2%;
     transform: translateY(-50%);
     width: 40%;
     min-width: 20em;
     z-index: 10;
+    animation: fade 1s ease-out both;
+}
+
+@keyframes fade {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 .form-panel .form-label:first-child {
@@ -77,14 +85,30 @@ a:hover,
 a:active {
     color: inherit;
 }
+/* form */
 
-form input.form-input {
+input.form-input {
     border-radius: 3px;
     border: 1px solid #bbb;
     width: 100%;
-    padding: 2px 6px;
+    padding: 3px 8px;
     cursor: text;
+    font-size: 1.2em;
 }
+
+input.form-input::placeholder {
+    color: #aaa;
+    font-size: 0.8em!important;
+}
+
+form input.form-input+input.form-input {
+    margin-top: 0.8em;
+}
+
+div.form-group {
+    position: relative;
+}
+/* input error icon display align right */
 
 input.form-input.form-input-error {
     background: url('https://assets-cdn.github.com/images/modules/ajax/error@2x.png');
@@ -92,6 +116,44 @@ input.form-input.form-input-error {
     background-repeat: no-repeat;
     background-position: right 8px center;
     border-color: red;
+}
+
+div.error-hint-box {
+    color: #86181d;
+    background-color: #ffdce0;
+    position: absolute;
+    z-index: 10;
+    display: block;
+    max-width: 450px;
+    padding: 5px 8px;
+    margin: 4px 0 0;
+    font-size: 1em;
+    font-weight: 400;
+    border: 1px solid #cea0a5;
+    border-radius: 3px;
+}
+
+div.error-hint-box::before, div.error-hint-box::after {
+    position: absolute;
+    bottom: 100%;
+    left: 10px;
+    z-index: 15;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+    content: " ";
+    border: solid transparent;
+}
+
+div.error-hint-box::before {
+    border-bottom-color: #cea0a5;
+    margin-left: -1px;
+    border-width: 6px;
+}
+
+div.error-hint-box::after {
+    border-bottom-color: #ffdce0;
+    border-width: 5px;
 }
 
 form button.form-login-btn {
@@ -131,10 +193,13 @@ form div div a {
     form div.form-panel {
         width: 80%;
         min-width: 20em;
-        top: 65%;
+        top: 68%;
         left: 50%;
         transform: translate(-50%, -50%);
         margin-left: 0px;
+    }
+    form .form-title {
+        text-align: center;
     }
     div.signin-intro {
         left: 50%;
@@ -143,5 +208,8 @@ form div div a {
         min-width: 20em;
         transform: translate(-50%, -50%);
         text-align: center;
+    }
+    div.signin-bg {
+        height: 120vh;
     }
 }

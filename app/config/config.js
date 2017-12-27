@@ -1,4 +1,5 @@
 const config = {
+  HOST_NAME: '0.0.0.0',
   LISTEN_PORT: 5000,
   CONNECTION_STRING: 'mongodb://172.16.238.5:27017/nblog',
   REDIS_HOST: '172.16.238.4',

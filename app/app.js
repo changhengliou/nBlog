@@ -6,6 +6,6 @@ const app = express();
 
 init(app);
 
-app.listen(Config.LISTEN_PORT, () => {
+app.listen(Config.LISTEN_PORT, Config.HOST_NAME, () => {
     console.log(`listen on port ${Config.LISTEN_PORT}.`)
 });

@@ -1,11 +1,10 @@
 branch-defaults:
-  circle:
-    environment: nBlog
-    group_suffix: null
+  signin:
+    environment: null
 global:
-  application_name: nBlog
+  application_name: nblog
   branch: null
-  default_ec2_keyname: key
+  default_ec2_keyname: nblog
   default_platform: Docker 17.06.2-ce
   default_region: ap-northeast-1
   include_git_submodules: true
