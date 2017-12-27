@@ -32,7 +32,7 @@ module.exports = (env) => {
                             }],
                             "react", "stage-0"
                         ],
-                        plugins: ["transform-runtime", "transform-react-constant-elements", "transform-react-inline-elements"]
+                        plugins: ["transform-runtime"].concat(isDevBuild ? [] : ["transform-react-constant-elements", "transform-react-inline-elements"]) 
                     }
                 }},
                 { test: /\.(png|jpg|jpeg|gif|svg)$/, use: 'url-loader?limit=100000' }

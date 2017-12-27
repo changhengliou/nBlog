@@ -3,6 +3,7 @@ const config = {
   CONNECTION_STRING: 'mongodb://172.16.238.5:27017/nblog',
   REDIS_HOST: '172.16.238.4',
   REDIS_PORT: '6379',
-  SERVER_SECRET: 'aMw?Wh16K6tYr$zBzFo3zq!&Qp&$ad'
+  SERVER_SECRET: 'aMw?Wh16K6tYr$zBzFo3zq!&Qp&$ad',
+  EXPIRE: 7200
 }
 export default config;

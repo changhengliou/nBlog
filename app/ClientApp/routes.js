@@ -9,17 +9,19 @@ import SignIn from './components/SignIn';
 import Setting from './components/Setting';
 
 export const routes = (
-    <Layout>
-        <Switch>
-            <Route exact path='/' component={ Counter } />
-            <Route exact path='/counter' component={ Counter } />
-            <Route exact path='/:userId/me' component={ DashBoard } />
-            <Route path='/post' component={ Post }/>
-            <Route exact path='/account' component={ Setting } />
-            <Route exact path='/signin' component={ SignIn } />
-            <Route component={ NotFound }/>
-        </Switch>
-    </Layout>
+    <Switch>
+        <Route exact path='/signin' component={ SignIn } />
+        <Layout>
+            <Switch>
+                <Route exact path='/' component={ Counter } />
+                <Route exact path='/counter' component={ Counter } />
+                <Route exact path='/:userId/me' component={ DashBoard } />
+                <Route path='/post' component={ Post }/>
+                <Route exact path='/account' component={ Setting } />
+                <Route component={ NotFound }/>
+            </Switch>
+        </Layout>
+    </Switch>
 );
 
 /**

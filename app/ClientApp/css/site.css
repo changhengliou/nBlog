@@ -75,58 +75,6 @@
     }
 }
 
-
-/** about */
-
-nav {
-    background: #333;
-}
-
-nav ul li {
-    list-style: none;
-    position: relative;
-}
-
-nav ul li ul {
-    margin: 0;
-    padding: 0;
-    display: none;
-    position: absolute;
-    background: #333;
-}
-
-nav ul li:hover>ul {
-    display: block;
-    top: 1.7em;
-}
-
-nav ul li ul li:hover {
-    background: #111;
-}
-
-nav ul li a {
-    text-decoration: none;
-    display: block;
-    padding: 0.5em;
-    float: left;
-    color: #fff;
-    width: 6em;
-}
-
-nav ul li a:hover {
-    background: #111;
-    color: #fff;
-}
-
-nav>ul>li {
-    float: left;
-}
-
-nav ul li ul li {
-    float: none;
-}
-
-
 /* pace js */
 
 .pace {

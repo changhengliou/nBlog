@@ -56,6 +56,7 @@
         "history": "4.7.2",
         "jest": "^21.2.1",
         "json-loader": "0.5.7",
+        "jsonwebtoken": "^8.1.0",
         "mongoose": "^4.13.5",
         "node-noop": "1.0.0",
         "nodemon": "^1.12.1",
