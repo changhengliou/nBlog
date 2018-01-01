@@ -1,6 +1,6 @@
 branch-defaults:
   signin:
-    environment: null
+    environment: nblog
 global:
   application_name: nblog
   branch: null

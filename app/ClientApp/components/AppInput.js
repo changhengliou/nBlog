@@ -10,12 +10,17 @@ class AppInput extends React.Component {
         this.state = {
             isValid: true,
             value: '',
-            errMsg: ''
+            errorMsg: ''
         };
-        this.onBlur = this.onBlur.bind(this);
-        this.onFocus = this.onFocus.bind(this);
-        this.onChange = this.onChange.bind(this);
-        this.isValid = this.isValid.bind(this);
+
+        [
+            'onBlur',
+            'onFocus',
+            'onChange',
+            'isValid',
+            'getErrorDisplay',
+            'getErrorDisplayStyle'
+        ].map(fn => this[fn] = this[fn].bind(this));
     }
 
     static propTypes = {
@@ -25,6 +30,10 @@ class AppInput extends React.Component {
         name: PropTypes.string,
         // input type
         type: PropTypes.string.isRequired,
+        // input value, specified if you want a controlled component
+        value: PropTypes.any,
+        // custom validation function, this should return an object contains errorMsg and isValid property
+        isValidFunc: PropTypes.func,
         // input placeholder
         placeholder: PropTypes.string,
         // input onblur listener
@@ -42,7 +51,9 @@ class AppInput extends React.Component {
         // minlength for input
         minLength: PropTypes.number,
         // maxlength for input
-        maxLength: PropTypes.number
+        maxLength: PropTypes.number,
+        // error msg display type, either 'popover', 'text', 'none'
+        errorDisplayType: PropTypes.string
     }
 
     static defaultProps = {
@@ -57,68 +68,115 @@ class AppInput extends React.Component {
         className: '',
         label: null,
         minLength: 0,
-        maxLength: 50
+        maxLength: 50,
+        errorDisplayType: 'none',
     }
 
     onBlur(e) {
-        e.preventDefault();
-        this.setState({ value: e.target.value, isValid: this.isValid(e.target.value) });
-        this.props.onBlur ? this.props.onBlur(e) : null;
+        var nextState = { 
+            ...this.state, 
+            ...this.isValid(e.target.value),
+            value: e.target.value, 
+        };
+
+        if (this.props.onBlur) {
+            this.props.onBlur(e, nextState);
+        }
+        this.setState(nextState);
     }
 
     onFocus(e) {
-        e.preventDefault();
-        this.setState({ value: e.target.value, isValid: true });
-        this.props.onFocus ? this.props.onFocus(e) : null;
+        var nextState = { 
+            ...this.state, 
+            isValid: true,
+            value: e.target.value, 
+        };
+        if (this.props.onFocus)  
+            this.props.onFocus(e, this.state); 
+        this.setState(nextState);
     }
 
     onChange(e) {
-        e.preventDefault();
-        this.setState({ value: e.target.value });
-        this.props.onChange ? this.props.onChange(e) : null;
+        var nextState = { 
+            ...this.state, 
+            value: e.target.value
+        };
+
+        if (this.props.onChange) 
+            this.props.onChange(e, this.state);
+        this.setState(nextState);  
     }
 
-    isValid(val) {
-        var { type, allowEmpty, maxLength, minLength } = this.props,
+    isValid (val) {
+        var { type, allowEmpty, maxLength, minLength, isValidFunc } = this.props,
             value = val || this.state.value;
-        
+
         if (!allowEmpty)
             if(isEmpty(value)) {
-                this.setState({ errMsg: 'Required field' });
-                return false;
+                return { isValid: false, errorMsg: 'Required field' };
             }
     
         if (value.length > maxLength) {
-            this.setState({ errMsg: `Max input characters are ${maxLength}` });
-            return false;
+            return { isValid: false, errorMsg: `Max input characters are ${maxLength}` };
         }
 
         if (value.length < minLength) {
-            this.setState({ errMsg: `You need at least ${minLength} characters` });
-            return false;
+            return { isValid: false, errorMsg: `You need at least ${minLength} characters` };
         }
 
         switch (type) {
             case 'email':
                 if (!isEmailValid(value)) {
-                    this.setState({ errMsg: 'Email is not valid' });
-                    return false;
+                    return { isValid: false, errorMsg: 'Email is not valid' };
                 }
                 break;
             case 'number':
                 if (isNaN(parseInt(value))) {
-                    this.setState({ errMsg: 'Number is not valid' });
-                    return false;
+                    return { isValid: false, errorMsg: 'Number is not valid' };
                 }
                 break;
         }
-        return true;
+
+        if (isValidFunc)
+            return isValidFunc(value);
+
+        return { 
+            isValid: true, 
+            errorMsg: null
+        };
+    }
+
+    getErrorDisplay(errorMsg) {
+        switch (this.props.errorDisplayType) {
+            case 'popover': 
+                return <div className='error-hint-box'>{ errorMsg }</div>;
+            case 'text':
+                return <div style={ { color: '#86181d' } }>{ errorMsg }</div>;
+            case 'none':
+            default:
+                return null;
+        }
+    }
+
+    getErrorDisplayStyle(errorMsg) {
+        if (!errorMsg)
+            return null;
+        switch (this.props.errorDisplayType) {
+            case 'popover': 
+                return { height: '62px' };
+            case 'text':
+                return { height: '42px' };
+            case 'none':
+            default:
+                return null;
+        }
     }
 
     render() {
         var { type, 
               name, 
               id, 
+              value: valProps, 
               placeholder, 
               onBlur, 
               onChange, 
@@ -127,9 +185,9 @@ class AppInput extends React.Component {
               label,
               minLength, 
               maxLength } = this.props,
-            { value, isValid } = this.state;
+            { value: valState, isValid, errorMsg } = this.state;
         return (
-            <div className='form-group' style={ isValid ? null : { height: '62px' } }>
+            <div className='form-group' style={ isValid ? null : this.getErrorDisplayStyle(errorMsg) }>
                 { label ? <label htmlFor={ id }>{ label }</label> : null }
                 <input className={ `form-input ${className} ${ isValid ? '' : 'form-input-error' }` } 
                        maxLength={ maxLength }
@@ -141,8 +199,8 @@ class AppInput extends React.Component {
                        onFocus={ this.onFocus }
                        onBlur={ this.onBlur }
                        onChange={ this.onChange }
-                       value={ value }/>
-                { isValid ? null : <div className='error-hint-box'>{ this.state.errMsg }</div> }
+                       value={ valProps == null ? valState : valProps }/>
+                { isValid ? null : this.getErrorDisplay(errorMsg) }
             </div>
         );
     }
