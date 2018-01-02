@@ -68,7 +68,7 @@ class SignInForm extends React.Component {
                                              this.setState({ idClass: '' }) }/>
                         <label className='form-label' htmlFor='userPwd'>
                             Password
-                            <Link className='form-label-right' to='/resetpwd'>forget password ?</Link>
+                            <Link className='form-label-right forget-pwd' to='/resetpwd'>forget password ?</Link>
                         </label>
                         <input className={`form-input ${this.state.pwdClass}`} type='password' name='userPwd' 
                                onBlur={ e => isEmpty(e.target.value) ? 
@@ -79,7 +79,9 @@ class SignInForm extends React.Component {
                                 Login { this.state.disabledSubmit ? <Spinner show={true}/> : null }
                         </button>
                     </div>
-                    <div className='form-footer'>New to N-Blog ? <Link to='/signup'>Create an account</Link></div>
+                    <div className='form-footer'>New to N-Blog ? 
+                        <Link to='/signup' className='form-link'>&nbsp;Create an account</Link>
+                    </div>
                 </div>
             </form>
         );

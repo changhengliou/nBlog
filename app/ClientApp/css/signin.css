@@ -175,6 +175,30 @@ form button.form-login-btn:disabled {
     border-color: #888;
 }
 
+form button.form-cancel-btn {
+    margin: 0.8em 0 0 0.4em;
+    border: 1px solid #0262cf;
+    border-radius: 5px;
+    padding: 0;
+}
+
+form button.form-cancel-btn:active {
+    background: #eee;
+}
+
+form a.form-cancel-link {
+    padding: 0.4em 1em;
+    display: block;
+    text-decoration: none;
+}
+
+
+form a.form-link {
+    color: #0366d6;
+    font-weight: 800;
+    text-decoration: none;
+}
+
 form .form-footer {
     margin-top: 0.5em;
     border: 1px solid #aaa;
@@ -184,7 +208,7 @@ form .form-footer {
     background: #fff
 }
 
-form div div a {
+form div div a.forget-pwd {
     color: #0366d6!important;
     font-weight: 800;
 }

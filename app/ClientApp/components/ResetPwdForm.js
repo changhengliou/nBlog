@@ -19,18 +19,19 @@ class ResetPwdForm extends React.Component {
                     <h4 className='form-title'>Please enter your email.</h4>
                     <div className='form-body'>
                         <AppInput type='email' 
-                                  name='userId' 
-                                  placeholder='userId'
+                                  name='usrEmail'
+                                  errorDisplayType='popover'
                                   onBlur={ e => isEmpty(e.target.value) ? 
                                                 this.setState({ idClass: 'form-input-error' }) : 
                                                 this.setState({ idClass: '' }) }/>
-                        <button className='form-login-btn' type="button" disabled={true}
-                            onClick={ () => { this.form.dispatchEvent(new Event('submit')) } }>
+                        <button className='form-login-btn' 
+                                type="button" 
+                                disabled={true}
+                                onClick={ () => { this.form.dispatchEvent(new Event('submit')) } }>
                             Search { <Spinner show={true}/> }
                         </button>
-                        <button className='form-login-btn' type="button" disabled={true}
-                            onClick={ () => { this.form.dispatchEvent(new Event('submit')) } }>
-                            <Link to='/signin'>Cancel</Link>
+                        <button className='form-cancel-btn' type="button">
+                            <Link className='form-cancel-link' to='/signin'>Cancel</Link>
                         </button>
                     </div>
                 </div>

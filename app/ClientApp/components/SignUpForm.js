@@ -28,13 +28,14 @@ class SignUpForm extends React.Component {
 
     onInputBlur(e, state) {
         var nextState = { ...this.state },
+            { name } = e.target,
             { isValid } = state;
 
-        if (this.panel.clientHeight > 400)
+        if (this.panel.clientHeight > 380)
             nextState.errorDisplayType = 'text';
         else
             nextState.errorDisplayType = 'popover';
-        switch(e.target.name) {
+        switch(name) {
             case 'userName':
                 nextState._nameValid = isValid;
                 break;
@@ -48,16 +49,24 @@ class SignUpForm extends React.Component {
                 nextState._pwd2Valid = isValid;
                 break;
         }
-        this.setState(nextState);
+        this.setState(nextState, () => {
+            if (name !== 'userPwd')
+                return;
+            // a workaroud to force update input 2
+            var ele = document.querySelector('input[name="userPwd2"]');
+            ele.focus();
+            ele.blur();
+        });
     }
 
     onInputChange(e, state) {
         var { name, value } = e.target,
             nextState = { ...this.state };
-        if (name === 'userPwd')
+        if (name === 'userPwd') {
             nextState._pwd = value;
-        else if (name === 'userPwd2')
+        } else if (name === 'userPwd2')
             nextState._pwd2 = value;
+
         this.setState(nextState);
     }
 
@@ -114,7 +123,7 @@ class SignUpForm extends React.Component {
                             Create Account { <Spinner show={ true }/> }
                         </button>
                         <span style={{ position: 'relative', top: '0', left: '1em' }}>
-                            or <Link to='/signin'>Signin</Link>
+                            or <Link to='/signin' className='form-link'>Signin</Link>
                         </span>
                         <div style={{ fontSize: '0.8em', color: '#999', marginTop: '0.5em'}}>
                             By signing up, you agree to our Terms of Service.
