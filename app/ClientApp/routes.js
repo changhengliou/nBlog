@@ -6,7 +6,7 @@ import Post from './components/Post';
 import NotFound from './components/NotFound';
 import DashBoard from './components/DashBoard';
 import Setting from './components/Setting';
-import Signin from './components/Signin';
+import SignIn from './components/SignIn';
 import SignInForm from './components/SignInForm';
 import SignUpForm from './components/SignUpForm';
 import ResetPwd from './components/ResetPwdForm';
@@ -22,9 +22,9 @@ const AppRoute = ({ component: Component, layout: Layout, ...rest }) => (
 
 export const routes = (
     <Switch>
-        { AppRoute({ component: SignInForm, layout: Signin, exact: true, path: '/signin'} ) }
-        { AppRoute({ component: SignUpForm, layout: Signin, exact: true, path: '/signup'} ) }
-        { AppRoute({ component: ResetPwd, layout: Signin, exact: true, path: '/resetpwd'} ) }
+        { AppRoute({ component: SignInForm, layout: SignIn, exact: true, path: '/signin'} ) }
+        { AppRoute({ component: SignUpForm, layout: SignIn, exact: true, path: '/signup'} ) }
+        { AppRoute({ component: ResetPwd, layout: SignIn, exact: true, path: '/resetpwd'} ) }
         { AppRoute({ component: AppInput, layout: Layout, exact: true, path: '/'} ) }
         { AppRoute({ component: DashBoard, layout: Layout, exact: true, path: '/:userId/me'} ) }
         { AppRoute({ component: Post, layout: Layout, exact: true, path: '/post'} ) }

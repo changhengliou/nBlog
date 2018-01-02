@@ -47,7 +47,7 @@ class SignInForm extends React.Component {
                 .then((res) => {
                     var { userName, token } = JSON.parse(res.text);
                     if (res.ok) {
-                        this.setState({isSignIn: false});
+                        this.setState({ isSignIn: false });
                         window.localStorage._t = token;
                     }
                 })
@@ -74,7 +74,10 @@ class SignInForm extends React.Component {
                                onBlur={ e => isEmpty(e.target.value) ? 
                                              this.setState({ pwdClass: 'form-input-error' }) : 
                                              this.setState({ pwdClass: '' }) }/>
-                        <button className='form-login-btn' type="button" disabled={this.state.disabledSubmit}
+                        <button className='form-login-btn' 
+                                type="button" 
+                                disabled={this.state.disabledSubmit}
+                                style={ { marginTop: '0.4em' } }
                                 onClick={ () => { this.form.dispatchEvent(new Event('submit')) } }>
                                 Login { this.state.disabledSubmit ? <Spinner show={true}/> : null }
                         </button>

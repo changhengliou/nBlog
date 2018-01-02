@@ -157,7 +157,6 @@ div.error-hint-box::after {
 }
 
 form button.form-login-btn {
-    margin-top: 0.8em;
     padding: 0.4em 1em;
     background: #0366d6;
     color: #fff;
