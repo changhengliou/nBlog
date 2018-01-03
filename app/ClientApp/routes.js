@@ -5,21 +5,32 @@ import Counter from './components/Counter';
 import Post from './components/Post';
 import NotFound from './components/NotFound';
 import DashBoard from './components/DashBoard';
-import SignIn from './components/SignIn';
 import Setting from './components/Setting';
+import SignIn from './components/SignIn';
+import SignInForm from './components/SignInForm';
+import SignUpForm from './components/SignUpForm';
+import ResetPwd from './components/ResetPwdForm';
+import AppInput from './components/AppInput';
+
+const AppRoute = ({ component: Component, layout: Layout, ...rest }) => (
+    <Route {...rest} render={ props => 
+        <Layout>
+            <Component {...props} />
+        </Layout>
+    }/>
+);
 
 export const routes = (
-    <Layout>
-        <Switch>
-            <Route exact path='/' component={ Counter } />
-            <Route exact path='/counter' component={ Counter } />
-            <Route exact path='/:userId/me' component={ DashBoard } />
-            <Route path='/post' component={ Post }/>
-            <Route exact path='/account' component={ Setting } />
-            <Route exact path='/signin' component={ SignIn } />
-            <Route component={ NotFound }/>
-        </Switch>
-    </Layout>
+    <Switch>
+        { AppRoute({ component: SignInForm, layout: SignIn, exact: true, path: '/signin'} ) }
+        { AppRoute({ component: SignUpForm, layout: SignIn, exact: true, path: '/signup'} ) }
+        { AppRoute({ component: ResetPwd, layout: SignIn, exact: true, path: '/resetpwd'} ) }
+        { AppRoute({ component: AppInput, layout: Layout, exact: true, path: '/'} ) }
+        { AppRoute({ component: DashBoard, layout: Layout, exact: true, path: '/:userId/me'} ) }
+        { AppRoute({ component: Post, layout: Layout, exact: true, path: '/post'} ) }
+        { AppRoute({ component: Setting, layout: Layout, exact: true, path: '/account'} ) }
+        { AppRoute({ component: NotFound, layout: Layout } ) }
+    </Switch>
 );
 
 /**

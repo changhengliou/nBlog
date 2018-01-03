@@ -14,3 +14,4 @@ export const reducer = (state, action) => {
     }
     return state || { count: 0 };
 };
+

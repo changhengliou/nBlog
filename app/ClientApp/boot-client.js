@@ -1,7 +1,6 @@
 import 'core-js/es6/map';
 import 'core-js/es6/set';
 import { load } from 'webfontloader';
-import './css/site.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -12,6 +11,8 @@ import { createBrowserHistory } from 'history';
 import configureStore from './configureStore';
 import { ApplicationState }  from './store';
 import * as RoutesModule from './routes';
+import './css/site.css';
+import './css/signin.css';
 
 let routes = RoutesModule.routes;
 

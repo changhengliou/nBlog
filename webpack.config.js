@@ -11,7 +11,7 @@ module.exports = (env) => {
         stats: { modules: false },
         resolve: { extensions: ['.js', '.jsx'] },
         output: {
-            filename: isDevBuild ? '[name].js' : '[name][chunkhash].js',
+            filename: '[name].js',//isDevBuild ? '[name].js' : '[name][chunkhash].js',
             publicPath: '/dist/' 
         },
         module: {
@@ -32,7 +32,7 @@ module.exports = (env) => {
                             }],
                             "react", "stage-0"
                         ],
-                        plugins: ["transform-runtime", "transform-react-constant-elements", "transform-react-inline-elements"]
+                        plugins: ["transform-runtime"].concat(isDevBuild ? [] : ["transform-react-constant-elements", "transform-react-inline-elements"]) 
                     }
                 }},
                 { test: /\.(png|jpg|jpeg|gif|svg)$/, use: 'url-loader?limit=100000' }
@@ -89,7 +89,7 @@ module.exports = (env) => {
                 moduleFilenameTemplate: path.relative(clientBundleOutputDir, '[resourcePath]') // Point sourcemap entries to the original file locations on disk
             })
         ] : [
-            new webpack.optimize.UglifyJsPlugin()
+            // new webpack.optimize.UglifyJsPlugin()
         ])
     });
 

@@ -20,7 +20,13 @@ export const init = (app) => {
     port: Config.REDIS_PORT,
   });
 
-  mongoose.connect(Config.CONNECTION_STRING, {useMongoClient: true});
+  mongoose.Promise = global.Promise; // a work around to make deprecation warning disappear
+  mongoose.connect(Config.CONNECTION_STRING, {
+    useMongoClient: true,
+    autoIndex: true,
+    poolSize: 10,
+    promiseLibrary: global.Promise // this line seems not working
+  });
 
   const db = mongoose.connection;
   db.on('connected', () => 

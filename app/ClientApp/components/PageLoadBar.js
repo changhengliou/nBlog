@@ -5,6 +5,15 @@ class PageLoadBar extends React.Component {
     constructor(props) {
         super(props);
     }
+
+    static defaultProps = {
+        progress: 50
+    }
+
+    static propTypes = {
+        progress: PropTypes.number.isRequired
+    }
+    
     render() {
         return this.props.progress >= 100 ? null :
         (
@@ -17,14 +26,6 @@ class PageLoadBar extends React.Component {
             </div>
         );
     }
-}
-
-PageLoadBar.defaultProps = {
-    progress: 50
-}
-
-PageLoadBar.propTypes = {
-    progress: PropTypes.number.isRequired
 }
 
 export default PageLoadBar;
