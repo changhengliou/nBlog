@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const merge = require('webpack-merge');
 const autoprefixer = require('autoprefixer');
+const ClosureCompilerPlugin = require('webpack-closure-compiler');
 
 module.exports = (env) => {
     const isDevBuild = !(env && env.prod);
@@ -90,6 +91,12 @@ module.exports = (env) => {
             })
         ] : [
             // new webpack.optimize.UglifyJsPlugin()
+            new ClosureCompilerPlugin({
+                compiler: {
+                    compilation_level: 'SIMPLE'
+                },
+                concurrency: 2
+            })
         ])
     });
 

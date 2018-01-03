@@ -1,5 +1,5 @@
 branch-defaults:
-  signin:
+  master:
     environment: nblog
 global:
   application_name: nblog

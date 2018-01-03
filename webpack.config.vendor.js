@@ -4,6 +4,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const merge = require('webpack-merge');
 const autoprefixer = require('autoprefixer');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const ClosureCompilerPlugin = require('webpack-closure-compiler');
 
 module.exports = (env) => {
     const isDevBuild = !(env && env.prod);
@@ -69,8 +70,14 @@ module.exports = (env) => {
                 name: '[name]_[hash]'
             })
         ].concat(isDevBuild ? [] : [
-            new webpack.optimize.UglifyJsPlugin(),
+            // new webpack.optimize.UglifyJsPlugin(),
             new CleanWebpackPlugin(clientBundleOutputDir),
+            new ClosureCompilerPlugin({
+                compiler: {
+                    compilation_level: 'SIMPLE'
+                },
+                concurrency: 2
+            })
         ])
     });
 

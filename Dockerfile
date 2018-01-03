@@ -1,8 +1,25 @@
 FROM node:9.2.0-alpine
 
-ENV NODE_ENV=production INSTALL_PATH=/usr/local/n-blog
+RUN { \
+		echo '#!/bin/sh'; \
+		echo 'set -e'; \
+		echo; \
+		echo 'dirname "$(dirname "$(readlink -f "$(which javac || which java)")")"'; \
+	} > /usr/local/bin/docker-java-home \
+	&& chmod +x /usr/local/bin/docker-java-home
 
-RUN mkdir ${INSTALL_PATH} && \
+ENV NODE_ENV=production \
+    INSTALL_PATH=/usr/local/n-blog \ 
+    JAVA_HOME=/usr/lib/jvm/java-1.8-openjdk \
+    PATH=$PATH:/usr/lib/jvm/java-1.8-openjdk/jre/bin:/usr/lib/jvm/java-1.8-openjdk/bin \
+    JAVA_VERSION=8u131 \
+    JAVA_ALPINE_VERSION=8.131.11-r2
+
+RUN set -x && \
+    apk add --no-cache \
+		openjdk8="$JAVA_ALPINE_VERSION" && \
+	[ "$JAVA_HOME" = "$(docker-java-home)" ] && \
+    mkdir ${INSTALL_PATH} && \
     chown node ${INSTALL_PATH}
 
 WORKDIR ${INSTALL_PATH}
