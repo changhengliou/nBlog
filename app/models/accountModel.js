@@ -7,6 +7,7 @@ export const UserSchema = new Schema({
         type: String, 
         required: [true, 'userName is required'], 
         unique: true,
+        uppercase: true,
         validate: str => !isEmpty(str)
     },
     passwordHash: { type: String, set: gethash },
@@ -17,8 +18,9 @@ export const UserSchema = new Schema({
         unique: true,
         validate: isEmailValid
     },
-    lastLoginTime: Date,
-    posts: []
+    lastActiveTime: Date,
+    posts: [],
+    groups: []
 });
 
 export const User = mongoose.model('User', UserSchema);

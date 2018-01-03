@@ -2,7 +2,7 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import Config from '../config/config';
-import { isEmpty, isEmailValid } from '../utils/util';
+import { gethash, isEmpty, isEmailValid } from '../utils/util';
 import { User } from '../models/accountModel';
 
 const router = express.Router();
@@ -18,20 +18,40 @@ router.get('/', (req, res) => res.send(req.url));
  * @returns {userName: string, token: string}
  */
 router.post('/signin', (req, res) => {
-    var { userId, userPwd } = req.body;
-    if (userId !== 'admin' && userPwd !== '1234') {
-        res.status(403).send(`request id = ${userId}, password = ${userPwd}`); 
+    var { userId, userPwd } = req.body,
+        _pwd = gethash(userPwd);
+
+    if (isEmpty(userId) || isEmpty(userPwd)) {
+        res.status(400).json({ msg: 'Invalid form' });
         return;
     }
 
-    jwt.sign({userName: 'admin'}, Config.SERVER_SECRET, { expiresIn: Config.EXPIRE } ,(err, token) => {
-        if (err) {
-            console.log(err);
-            res.status(500).send('Something goes wrong.');
-            return;
-        }
-        res.json({userName: 'admin', token: token});
-    });
+    User.findOne({ $or: [ { 
+            name: userId.toUpperCase(), 
+            passwordHash: _pwd 
+        }, { 
+            email: userId.toUpperCase(),
+            passwordHash: _pwd
+        } ]}, 'name email', (err, obj) => {
+            if (err) {
+                console.log(err);
+                res.status(500).json({ msg: `Failed to query database, ${err}` }); 
+                return;
+            }
+            if (!obj) {
+                res.status(403).json({ msg: `Please make sure you submit the correct information.` });
+                return;
+            }
+
+            jwt.sign({userName: 'admin'}, Config.SERVER_SECRET, { expiresIn: Config.EXPIRE } ,(err, token) => {
+                if (err) {
+                    console.log(err);
+                    res.status(500).json({ msg: 'Something goes wrong.' });
+                    return;
+                }
+                res.json({ userName: obj.name, emailAddr: obj.email, token: token });
+            });
+        });
 });
 
 /**
@@ -52,14 +72,28 @@ router.post('/signup', (req, res) => {
         return;
     }
 
-    jwt.sign({userName: 'admin'}, Config.SERVER_SECRET, { expiresIn: Config.EXPIRE } ,(err, token) => {
-        if (err) {
-            console.log(err);
-            res.status(500).json({ msg: 'Something goes wrong.' });
-            return;
-        }
-        res.json({ userName: 'admin', token: token });
+    var user = new User({
+        name: userName,
+        passwordHash: userPwd,
+        email: emailAddr,
+        lastActiveTime: new Date()
     });
+
+    user.save()
+        .then(obj => {
+            jwt.sign({ userName: 'admin' }, Config.SERVER_SECRET, { expiresIn: Config.EXPIRE } ,(err, token) => {
+                if (err) {
+                    console.log(err);
+                    res.status(500).json({ msg: 'Something goes wrong.' });
+                    return;
+                }
+                res.json({ userName: 'admin', token: token });
+            });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(400).json({ msg: `Failed to save data, ${err}` });
+        });
 });
 
 /**
