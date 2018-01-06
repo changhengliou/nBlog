@@ -13,6 +13,7 @@ import { ApplicationState }  from './store';
 import * as RoutesModule from './routes';
 import './css/site.css';
 import './css/signin.css';
+import './css/post.css';
 
 let routes = RoutesModule.routes;
 
@@ -28,10 +29,10 @@ function renderApp() {
         google: {
             families: ['Ubuntu']
         },
-        custom: {
-            famalies: ['cwTeXYen'],
-            urls: ['https://fonts.googleapis.com/earlyaccess/cwtexyen.css']    
-        }
+        // custom: {
+        //     famalies: ['cwTeXYen'],
+        //     urls: ['https://fonts.googleapis.com/earlyaccess/cwtexyen.css']    
+        // }
     });
     ReactDOM.hydrate(
         // <AppContainer>

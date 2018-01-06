@@ -22,10 +22,12 @@ class DashBoard extends React.Component {
     };
 
     loading() {
-        var id = setInterval(() => {
+        this.id = setInterval(() => {
             this.setState({progress: this.state.progress + 1});
-            if (this.state.progress >= 100)
-                clearInterval(id);
+            if (this.state.progress >= 100) {
+                clearInterval(this.id);
+                this.id = null;
+            }
         }, 5);
     }
 
@@ -33,11 +35,18 @@ class DashBoard extends React.Component {
         this.loading();
     }
 
+    componentWillUnmount() {
+        if(this.id)
+            clearInterval(this.id);
+    }
+
     render() {
         return (
             <div>
                 <PageLoadBar progress={this.state.progress}/>
-                <h1>{ typeof window === 'undefined' ? this.userId.replace('/', '') : this.props.match.params.userId }'s dashboard</h1>
+                <h1>Hello changheng!</h1>
+                <h2>new post!</h2>
+                <h2>my porst!</h2>
             </div>
         );
     }

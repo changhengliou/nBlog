@@ -1,10 +1,16 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import { NavLink, Link, browserHistory } from 'react-router-dom';
 
 export class NavMenu extends React.Component {
-    constructor(props) {
-        super(props);
+    constructor(props, context) {
+        super(props, context);
     }
+
+    static contextTypes = {
+        router: PropTypes.object
+    }
+
     render() {
         return (
         <div className='main-nav'>
@@ -27,18 +33,20 @@ export class NavMenu extends React.Component {
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink to={ '/post' } activeClassName='active'>
+                            <NavLink to={ '/post' } 
+                                     activeClassName='active' 
+                                     isActive={ (a, b) => (b.pathname === '/' || a) ? true : false }>
                                 <span className='glyphicon glyphicon-th-list'></span> Posts
-                            </NavLink>
-                        </li>
-                        <li>
-                            <NavLink to={ '/counter' } activeClassName='active'>
-                                <span className='glyphicon glyphicon-education'></span> Counter
                             </NavLink>
                         </li>
                         <li>
                             <NavLink to={ '/account' } activeClassName='active'>
                                 <span className='glyphicon glyphicon-education'></span> Account
+                            </NavLink>
+                        </li>
+                        <li>
+                            <NavLink to={ '/admin' } activeClassName='active'>
+                                <span className='glyphicon glyphicon-education'></span> Manage db
                             </NavLink>
                         </li>
                         <li>

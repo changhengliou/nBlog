@@ -1,13 +1,19 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import * as PostStore from '../store/PostStore';
 import { Link } from 'react-router-dom';
-
+import * as PostStore from '../store/PostStore';
+import PostPreview from './PostPreview';
 class Post extends React.Component {
     render() {
         return (
             <div>
-                <h1>Posts</h1>
+                <h1>Trending Posts</h1>
+                <PostPreview/>
+                <PostPreview/>
+                <PostPreview/>
+                <PostPreview/>
+                <PostPreview/>
+                <PostPreview/>
             </div>
         );
     }

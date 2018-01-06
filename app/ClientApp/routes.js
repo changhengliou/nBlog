@@ -25,9 +25,9 @@ export const routes = (
         { AppRoute({ component: SignInForm, layout: SignIn, exact: true, path: '/signin'} ) }
         { AppRoute({ component: SignUpForm, layout: SignIn, exact: true, path: '/signup'} ) }
         { AppRoute({ component: ResetPwd, layout: SignIn, exact: true, path: '/resetpwd'} ) }
-        { AppRoute({ component: AppInput, layout: Layout, exact: true, path: '/'} ) }
+        { AppRoute({ component: Post, layout: Layout, exact: true, path: '/'} ) }
         { AppRoute({ component: DashBoard, layout: Layout, exact: true, path: '/:userId/me'} ) }
-        { AppRoute({ component: Post, layout: Layout, exact: true, path: '/post'} ) }
+        { AppRoute({ component: Post, layout: Layout, exact: true, path: '/post/:authorId?'} ) }
         { AppRoute({ component: Setting, layout: Layout, exact: true, path: '/account'} ) }
         { AppRoute({ component: NotFound, layout: Layout } ) }
     </Switch>
