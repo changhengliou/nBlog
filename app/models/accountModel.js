@@ -13,13 +13,22 @@ export const UserSchema = new Schema({
     passwordHash: { type: String, set: gethash },
     email: { 
         type: String, 
-        required: [true, 'userName is required'], 
+        required: [true, 'email is required'], 
         uppercase: true, 
         unique: true,
         validate: isEmailValid
     },
+    gender: {
+        type: String,
+        enum: [ "male", "female" ]
+    },
+    avatar: String,
+    selfIntro: String,
     lastActiveTime: Date,
-    posts: [],
+    posts: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Post'
+    }],
     groups: []
 });
 

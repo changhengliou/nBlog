@@ -7,7 +7,16 @@ import { User } from '../models/accountModel';
 
 const router = express.Router();
 
-router.get('/', (req, res) => res.send(req.url));
+router.all('*', (req, res, next) => {
+    switch(req.path) {
+        case '/api/v1/account/exist':
+            // check if auth success?
+            next();
+            break;
+        default:
+            next();
+    }
+});
 
 /**
  * user signin
@@ -104,16 +113,41 @@ router.post('/signup', (req, res) => {
  * @returns {existed: bool} is existed
  */
 router.get('/exist', (req, res) => {
-    var { em, id } = req.params;
+    var { em, id } = req.query;
     User.findOne({ $or: [{ 'name': em }, { 'email': id }] }, 'email')
         .then(result => {
-            console.log(result);
-            res.json({ existed: false, res: result });
+            if (result != null) {
+                res.json({ existed: false, res: result });
+            } else {
+                res.send({ existed: true });
+            }
         })
         .catch(err => {
             console.log(err);
             res.status(400).json({ existed: true });
         });
+});
+
+/**
+ * delete a user
+ */
+router.delete('/delete/:userId', (req, res) => {
+    var { userId } = req.param;
+    if (isEmpty(userId)) {
+        res.json({ msg: 'Failed' });
+        return;
+    }
+    var result = User.findOneAndRemove({ _id: userId });
+    if (result)
+        res.json({ msg: 'Success' });
+    else
+        res.json({ msg: 'Failed' });
+});
+
+/**
+ * update user info
+ */
+router.put('/update/user/:userId', (req, res) => {
 });
 
 
