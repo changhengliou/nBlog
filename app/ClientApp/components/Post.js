@@ -1,9 +1,19 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import request from 'superagent';
 import * as PostStore from '../store/PostStore';
 import PostPreview from './PostPreview';
 class Post extends React.Component {
+    constructor(props) {
+        super(props);
+        this.getPosts = this.getPosts.bind(this);
+    }
+
+    getPosts(pg = 0) {
+        
+    }
+    
     render() {
         return (
             <div>

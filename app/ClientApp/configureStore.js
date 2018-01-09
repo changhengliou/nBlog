@@ -8,7 +8,16 @@ import { createLogger } from 'redux-logger';
 
 export default function configureStore(history, initialState) {
     const logger = createLogger({
-        predicate: (getState, action) => action.type !== '@@router/LOCATION_CHANGE'
+        predicate: (getState, action) => { 
+            switch(action.type) {
+                case '@@router/LOCATION_CHANGE':
+                case 'DASHBOARD_PROGRESS_CHANGED':
+                case 'DASHBOARD_EDITOR_CHANGED':
+                    return false;
+                default:
+                    return true;
+            }
+        }
     });
     const windowIfDefined = typeof window === 'undefined' ? null : window;
     // If devTools is installed, connect to it

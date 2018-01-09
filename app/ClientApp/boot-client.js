@@ -11,6 +11,7 @@ import { createBrowserHistory } from 'history';
 import configureStore from './configureStore';
 import { ApplicationState }  from './store';
 import * as RoutesModule from './routes';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import './css/site.css';
 import './css/signin.css';
 import './css/post.css';

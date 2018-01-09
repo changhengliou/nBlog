@@ -10,8 +10,13 @@ const postSchema = new Schema({
     },
     excerpt: String,
     content: String,
-    comment: Array,
-    like: Array,
+    comments: Array,
+    views: {
+        type: Number,
+        default: 0
+    },
+    viewsBy: Array,
+    likes: Array,
     author: {
         type: Schema.Types.ObjectId,
         ref: 'User'
@@ -20,10 +25,8 @@ const postSchema = new Schema({
         type: Date,
         default: Date.now()
     },
-    views: {
-        type: Number,
-        default: 0
-    }
+    labels: Array,
+    group: Array
 });
 
 class PostAddOn {
@@ -42,6 +45,7 @@ export const commentSchema = new Schema({
         ref: 'User',
         type: Schema.Types.ObjectId
     },
+    reply: Array,
     date: {
         type: Date,
         default: Date.now()

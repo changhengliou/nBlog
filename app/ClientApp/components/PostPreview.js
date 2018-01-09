@@ -13,6 +13,7 @@ class PostPreview extends React.Component {
         excerpt: PropTypes.string,
         lastEditTime: PropTypes.string,
         lastEditExactTime: PropTypes.string,
+        labels: PropTypes.array,
         views: PropTypes.number,
         comments: PropTypes.number,
         showExactTime: PropTypes.bool
@@ -28,12 +29,13 @@ class PostPreview extends React.Component {
                  'try winning an election. Sad!',
         lastEditTime: '2 days ago',
         lastEditExactTime: '2018-01-15 18:33:22',
+        labels: [],
         views: 335,
         comments: 24,
         showExactTime: true
     }
     render() {
-        var { title, avatar, excerpt, lastEditTime, lastEditExactTime, views, comments, showExactTime } = this.props,
+        var { title, avatar, excerpt, lastEditTime, lastEditExactTime, views, comments, labels, showExactTime } = this.props,
             exactTime = showExactTime && this.state.show ? 
                         <div className="popover">{ lastEditExactTime }</div> : 
                         null;

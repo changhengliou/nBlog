@@ -71,3 +71,32 @@ div.popover::before {
     margin-left: -1px;
     border-width: 6px;
 }
+
+.post-editor-wrapper {
+    border: 1px solid #e1e1e1;
+    border-radius: 4px;
+    line-height: 1;
+}
+.post-editor {
+    padding: 0 0.4em;
+}
+
+tr.post-table-row {
+    border-top: 1px solid #e1e1e1;
+}
+
+tr.post-table-row td {
+    padding: 0.3em 0;
+}
+
+.post-input {
+    padding: 0.4em;
+    border: 1px solid #e1e1e1;
+    border-radius: 4px;
+    width: 100%;
+}
+
+.post-title-btn {
+    margin-top: 20px;
+    float: right;
+}
