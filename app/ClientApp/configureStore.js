@@ -11,11 +11,9 @@ export default function configureStore(history, initialState) {
         predicate: (getState, action) => { 
             switch(action.type) {
                 case '@@router/LOCATION_CHANGE':
-                case 'DASHBOARD_PROGRESS_CHANGED':
-                case 'DASHBOARD_EDITOR_CHANGED':
                     return false;
                 default:
-                    return true;
+                    return !/(_CHANGE(D)?)/.test(action.type);
             }
         }
     });

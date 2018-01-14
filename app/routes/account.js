@@ -52,13 +52,17 @@ router.post('/signin', (req, res) => {
                 return;
             }
 
-            jwt.sign({userName: 'admin'}, Config.SERVER_SECRET, { expiresIn: Config.EXPIRE } ,(err, token) => {
+            jwt.sign({
+                    _id: obj._id,
+                    name: obj.name,
+                    email: obj.email
+                }, Config.SERVER_SECRET, { expiresIn: Config.EXPIRE } ,(err, token) => {
                 if (err) {
                     console.log(err);
                     res.status(500).json({ msg: 'Something goes wrong.' });
                     return;
                 }
-                res.json({ userName: obj.name, emailAddr: obj.email, token: token });
+                res.json({ _id: obj._id, userName: obj.name, emailAddr: obj.email, token: token });
             });
         });
 });
@@ -90,13 +94,17 @@ router.post('/signup', (req, res) => {
 
     user.save()
         .then(obj => {
-            jwt.sign({ userName: 'admin' }, Config.SERVER_SECRET, { expiresIn: Config.EXPIRE } ,(err, token) => {
+            jwt.sign({
+                _id: obj._id,
+                name: obj.name,
+                email: obj.email
+            }, Config.SERVER_SECRET, { expiresIn: Config.EXPIRE } ,(err, token) => {
                 if (err) {
                     console.log(err);
                     res.status(500).json({ msg: 'Something goes wrong.' });
                     return;
                 }
-                res.json({ userName: 'admin', token: token });
+                res.json({ userName: obj.name, token: token });
             });
         })
         .catch(err => {

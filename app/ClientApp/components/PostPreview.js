@@ -6,12 +6,18 @@ class PostPreview extends React.Component {
     constructor(props) {
         super(props);
         this.state = { show: false };
+        this.renderLastEditTime = this.renderLastEditTime.bind(this);
     }
+
     static propTypes = {
+        // _id: PropTypes.string.isRequired,
         title: PropTypes.string,
         avatar: PropTypes.string,
         excerpt: PropTypes.string,
-        lastEditTime: PropTypes.string,
+        lastEditTime: PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.number
+        ]),
         lastEditExactTime: PropTypes.string,
         labels: PropTypes.array,
         views: PropTypes.number,
@@ -34,6 +40,14 @@ class PostPreview extends React.Component {
         comments: 24,
         showExactTime: true
     }
+    
+    renderLastEditTime(time) {
+        if (!time || time < 1)
+            return 'Less than 1 day ago';
+        if (time == 1)
+            return '1 day ago';
+        return `${time} days ago`;
+    }
     render() {
         var { title, avatar, excerpt, lastEditTime, lastEditExactTime, views, comments, labels, showExactTime } = this.props,
             exactTime = showExactTime && this.state.show ? 
@@ -54,7 +68,7 @@ class PostPreview extends React.Component {
                         <div className="post-preview-footer">
                             <span onMouseEnter={ () => this.setState({ show: true }) }
                                   onMouseLeave={ () => this.setState({ show: false }) }>
-                                { lastEditTime }
+                                { this.renderLastEditTime(lastEditTime) }
                             </span>
                             { exactTime }
                             <span className="post-preview-stats">Views ({ views }) Comments ({ comments })</span>

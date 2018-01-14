@@ -14,7 +14,8 @@ class SignInForm extends React.Component {
             idClass: '', 
             pwdClass: '', 
             isSignIn: false, 
-            disabledSubmit: false
+            disabledSubmit: false,
+            userName: null
         };
     }
 
@@ -47,8 +48,8 @@ class SignInForm extends React.Component {
                 .then((res) => {
                     var { userName, token } = JSON.parse(res.text);
                     if (res.ok) {
-                        this.setState({ isSignIn: false });
                         window.localStorage._t = token;
+                        this.setState({ isSignIn: true, userName: userName });
                     }
                 })
                 .catch(err => console.log(err))
