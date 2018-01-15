@@ -66,7 +66,7 @@ export const actionCreators = {
                         title: '',
                         excerpt: '',
                         editorState: EditorState.createEmpty(),
-                        editorMsg: 'Publish the post success!'
+                        editorMsg: 'Successfully publish the post!'
                     } });
                     var { data, msg } = JSON.parse(res.text);
                     console.log(data, msg);
@@ -85,7 +85,7 @@ export const actionCreators = {
         dispatch({ type: 'DASHBOARD_DISCARD_STARTED' });
         request.del(`/api/v1/post/${_id}/remove`)
                .then(res => {
-                    dispatch({ type: 'DASHBOARD_DISCARD_FINISHED', payload: { editorMsg: 'Success to remove the post.', ...emptyEditor } });
+                    dispatch({ type: 'DASHBOARD_DISCARD_FINISHED', payload: { editorMsg: 'Successfully remove the post.', ...emptyEditor } });
                })
                .catch(err => {
                    console.log(err);
