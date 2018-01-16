@@ -1,16 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { convertFromRaw } from 'draft-js';
-import { stateToHTML } from 'draft-js-export-html';
+import { connect } from 'react-redux';
+import * as PostDetailStore from '../store/PostDetailStore';
 class PostDetail extends React.Component {
     constructor(props) {
         super(props);
-        [ 'renderComments' ].map(fn => this[fn] = this[fn].bind(this));
+        [ 'renderComments', 'renderHtmlMarkup' ].map(fn => this[fn] = this[fn].bind(this));
     }
+
+    componentDidMount() {
+        var { getPost, match } = this.props;
+        getPost(match.params.postId);
+    }
+
     static propTypes = {
         title: PropTypes.string,
-        excerpt: PropTypes.string,
-        content: PropTypes.object,
+        content: PropTypes.string,
         comments: PropTypes.array,
         likes: PropTypes.array,
         views: PropTypes.oneOfType([
@@ -20,7 +25,9 @@ class PostDetail extends React.Component {
         lastEditTime: PropTypes.oneOfType([
             PropTypes.instanceOf(Date),
             PropTypes.string
-        ])
+        ]),
+        // if empty, render the post, otherwise, display current status
+        status: PropTypes.string,
     }
 
     static defaultProps = {
@@ -31,6 +38,8 @@ class PostDetail extends React.Component {
     }
 
     renderComments(comments) {
+        if (comments.length == 0)
+            return <div style={ { textAlign: 'center', marginBottom: '20px' } }>No comments yet...</div>
         return comments.map(obj => {
             return (
                 <div>
@@ -42,22 +51,44 @@ class PostDetail extends React.Component {
         });
     }
 
+    renderHtmlMarkup(html) {
+        return { __html: html };
+    }
+
     render() {
-        var { title, content, comments, likes, views } = this.props,
-            html = stateToHTML(content);
-        return (
-            <div className='panel panel-default'>
-                <h2 className='panel-heading'>{ title }</h2>
-                <div className='panel-body'>
-                    <div>{ html }</div>
-                    <div>likes({ likes.length })</div>
-                    <div>views({ views })</div>
+        var { title, content, comments, likes, views, status, onCommentSubmit } = this.props;
+
+        return status ? <h1>{ status }</h1> : (
+            <div>
+                <div className='panel panel-default' style={ { marginTop: '20px' } }>
+                    <div className='panel-heading' style={ { fontSize: '24px' } }>{ title }</div>
+                    <div className='panel-body'>
+                        <div dangerouslySetInnerHTML={ this.renderHtmlMarkup(content) }/>
+                        <div style={ { textAlign: 'right' } }>
+                            likes({ likes.length }) views({ views })
+                        </div>
+                    </div>
+                    <hr/>
+                    { this.renderComments(comments) }
                 </div>
-                <hr/>
-                { this.renderComments(comments) }
+                <div className='form-group'>
+                    <label>Leave a comment:</label>
+                    <form onSubmit={ onCommentSubmit } action='/zzz' name='commentForm'>
+                        <textarea className='form-control input-sm' type='text' row='4'/>
+                        <div style={ { float: 'right', marginTop: '10px' } }>
+                            <input type='button' 
+                                   value='Submit'
+                                   onClick={ (e) => document.forms.commentForm.dispatchEvent(new Event('submit')) } 
+                                   className='btn btn-primary btn-sm'/>
+                        </div>
+                    </form>
+                </div>
             </div>
         );
     }
 }
 
-export default PostDetail;
+export default connect(
+    (state) => state.postdetail,
+    PostDetailStore.actionCreators
+)(PostDetail);

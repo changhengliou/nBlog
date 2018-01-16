@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import Layout from './components/Layout';
-import Counter from './components/Counter';
 import Post from './components/Post';
 import NotFound from './components/NotFound';
 import DashBoard from './components/DashBoard';
@@ -11,6 +10,7 @@ import SignInForm from './components/SignInForm';
 import SignUpForm from './components/SignUpForm';
 import ResetPwd from './components/ResetPwdForm';
 import AppInput from './components/AppInput';
+import PostDetail from './components/PostDetail';
 
 const AppRoute = ({ component: Component, layout: Layout, ...rest }) => (
     <Route {...rest} render={ props => 
@@ -28,6 +28,7 @@ export const routes = (
         { AppRoute({ component: Post, layout: Layout, exact: true, path: '/'} ) }
         { AppRoute({ component: DashBoard, layout: Layout, exact: true, path: '/:userId/me'} ) }
         { AppRoute({ component: Post, layout: Layout, exact: true, path: '/post/:authorId?'} ) }
+        { AppRoute({ component: PostDetail, layout: Layout, exact: true, path: '/:postId/post' } ) }
         { AppRoute({ component: Setting, layout: Layout, exact: true, path: '/account'} ) }
         { AppRoute({ component: NotFound, layout: Layout } ) }
     </Switch>
