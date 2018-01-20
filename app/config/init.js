@@ -89,4 +89,7 @@ export const init = (app) => {
     res.status(err.status || 500);
     res.render('error', {helpers: {statusCode: err.status, errorMsg: err}});
   });
+  return app;
 }
+
+export const app = init(express());
