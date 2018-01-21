@@ -1,6 +1,6 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
-import mongoose from 'mongoose';
+import mongoose, { Error } from 'mongoose';
 import Config from '../config/config';
 import { gethash, isEmpty, isEmailValid } from '../utils/util';
 import { User } from '../models/accountModel';
@@ -140,16 +140,20 @@ router.get('/exist', (req, res) => {
  * delete a user
  */
 router.delete('/delete/:userId', (req, res) => {
-    var { userId } = req.param;
+    var { userId } = req.params;
     if (isEmpty(userId)) {
-        res.json({ msg: 'Failed' });
+        res.status(400).json({ msg: 'Invalid Request.' });
         return;
     }
-    var result = User.findOneAndRemove({ _id: userId });
-    if (result)
-        res.json({ msg: 'Success' });
-    else
-        res.json({ msg: 'Failed' });
+    User.findOneAndRemove({ _id: mongoose.mongo.ObjectId(userId) })
+        .then(result => {
+                if (result._id != userId)
+                    throw new Error();
+                res.json({ msg: 'Success' });
+            })
+            .catch(err => {
+                res.status(410).json({ msg: 'Failed' });
+            });
 });
 
 /**
