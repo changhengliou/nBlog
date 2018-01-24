@@ -61,13 +61,13 @@ export const init = (app) => {
   app.use(cookieParser());
   app.use(express.static(path.join(rootPath, 'wwwroot')));
 
-  app.use(session({
-    // store: new RedisStore({client: redisClient}),
-    secret: Config.SERVER_SECRET,
-    cookie: {maxAge: 60000},
-    resave: false,
-    saveUninitialized: false
-  }));
+  // app.use(session({
+  //   store: new RedisStore({client: redisClient}),
+  //   secret: Config.SERVER_SECRET,
+  //   cookie: {maxAge: 60000},
+  //   resave: false,
+  //   saveUninitialized: false
+  // }));
 
   app.use((req, res, next) => {
     res.set('x-content-type-options', 'nosniff');

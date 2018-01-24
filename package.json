@@ -64,7 +64,7 @@
         "jsonwebtoken": "^8.1.0",
         "mongoose": "^4.13.5",
         "node-noop": "1.0.0",
-        "nodemon": "^1.12.1",
+        "nodemon": "^1.14.11",
         "postcss-loader": "^2.0.9",
         "prop-types": "^15.6.0",
         "react": "16.1.1",

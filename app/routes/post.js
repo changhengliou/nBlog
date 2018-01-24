@@ -138,25 +138,63 @@ router.delete('/:postId/remove', (req, res, next) => {
 });
 
 /**
- * comment on post by id
+ * post a comment 
  */
-router.get('/:postId/comment', (req, res, next) => {
-    res.send(`${req.originalUrl}`);
+router.post('/:postId/comment', (req, res, next) => {
+    var { remark, author, _t } = req.body,
+        { postId } = req.params;
+    Post.findById(postId)
+        .select('comments')
+        .exec()
+        .then(obj => {
+            obj.comments.push({
+                _id: mongoose.Types.ObjectId(),
+                author: author,
+                remark: remark,
+                date: Date.now()
+            });
+
+            obj.save().then(o => {
+                res.json({ msg: 'Success', _id: o._id });
+            })
+            .catch(err => {
+                res.status(500).json({ msg: 'Failed to save post' });
+            });
+        })
+        .catch(err => {
+            res.status(500).json({ msg: 'Failed to save post' });
+        });
+});
+
+/**
+ * update a comment
+ */
+router.put('/:postId/comment/:commentId', (req, res, next) => {
+    var { postId, commentId } = req.params,
+        { remark, author, _t } = req.body;
+    Post.findById(postId)
+        .update({ _id: postId }, { $set: { 
+            'comments.$.author': author,
+            'comments.$.remark': remark,
+            'comments.$.date': Date.now()
+        } })
+        .lean()
+        .exec()
+        .then(obj => res.json({ msg: 'Success' }))
+        .catch(err => res.status(500).json({ msg: 'Failed' }));
 });
 
 /**
  * remove a comment
  */
-router.get('/:postId/comment/:commentId/remove', (req, res, next) => {
-    var params = '';
-    Object.keys(req.params).map((obj) => {
-        params += `key = ${obj}, value = ${req.params[obj]}\n`;
-    });
-    var queries = '';
-    Object.keys(req.query).map((obj) => {
-        params += `key = ${obj}, value = ${req.query[obj]}\n`;
-    });
-    res.send(`${req.originalUrl} ${params} ${queries}`);
+router.delete('/:postId/comment/:commentId', (req, res, next) => {
+    var { postId, commentId } = req.params;
+    Post.findById(postId)
+        .update({ _id: postId }, { $pullAll: { _id: [commentId] } })
+        .lean()
+        .exec()
+        .then(obj => res.json({ msg: 'Success' }))
+        .catch(err => res.status(500).json({ msg: 'Failed' }));
 });
 
 export default (app) => app.use('/api/v1/post', router);
