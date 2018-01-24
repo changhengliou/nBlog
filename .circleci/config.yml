@@ -16,7 +16,7 @@ jobs:
             - setup_remote_docker
             - run:
                 name: Unit test in the docker container
-                command: docker-compose run app yarn run test
+                command: docker-compose -f docker-compose-test.yml run app yarn run test
             
             - store_artifacts:
                 path: /tmp/test-results
