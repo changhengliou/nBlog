@@ -1,15 +1,18 @@
 import express from 'express';
-import moongose from 'mongoose';
+import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 import Config from '../config/config';
 import { Post } from '../models/postModel';
-import { isEmpty, getDateString, getDateTimeString } from '../utils/util';
-import { sendError } from '../utils/common';
+import { sendError, internalServerError } from '../utils/common';
 import { isNumber } from 'util';
+import { identityMiddleWare, authenticationMiddleware } from './middleware';
+import { isEmpty, getDateString, getDateTimeString } from '../utils/util';
 
 const router = express.Router();
 const POSTS_PER_PAGE = 30;
 
+router.all('*', identityMiddleWare);
+router.all(['/', '/:postId/edit', '/create', '/:postId/remove'], authenticationMiddleware);
 /**
  * get all posts
  * @param {number} p number of page
@@ -43,11 +46,11 @@ router.get('/', (req, res, next) => {
             }
         } ])
         .then(s => {
+            console.log(res.locals);
             res.send({ data: s });
         })
         .catch(err => {
-            console.log(err);
-            res.status(500).json({ msg: 'Failed to get posts' })
+            internalServerError(res, err, msg = 'Failed to get posts');
         });
 });
 
@@ -141,15 +144,16 @@ router.delete('/:postId/remove', (req, res, next) => {
  * post a comment 
  */
 router.post('/:postId/comment', (req, res, next) => {
-    var { remark, author, _t } = req.body,
+    var { remark } = req.body,
         { postId } = req.params;
+
     Post.findById(postId)
         .select('comments')
         .exec()
         .then(obj => {
             obj.comments.push({
                 _id: mongoose.Types.ObjectId(),
-                author: author,
+                author: res.locals.auth.name,
                 remark: remark,
                 date: Date.now()
             });
@@ -158,11 +162,11 @@ router.post('/:postId/comment', (req, res, next) => {
                 res.json({ msg: 'Success', _id: o._id });
             })
             .catch(err => {
-                res.status(500).json({ msg: 'Failed to save post' });
+                internalServerError(res, err, 'Failed to save post');
             });
         })
         .catch(err => {
-            res.status(500).json({ msg: 'Failed to save post' });
+            internalServerError(res, err, 'Failed to save post');
         });
 });
 

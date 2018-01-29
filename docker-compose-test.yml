@@ -30,8 +30,6 @@ services:
             - 27017:27017
         restart: always
 networks:
-    front:
-        driver: bridge
     back:
         driver: bridge
         ipam:

@@ -14,8 +14,7 @@ export const actionCreators = {
                    dispatch({ type: 'POST_GET_POSTS_FINISHED', payload: { posts: data } });
                })
                .catch(err => {
-                    var { msg } = JSON.parse(res.text);
-                    dispatch({ type: 'POST_GET_POSTS_ERR', payload: { msg: msg } });
+                    dispatch({ type: 'POST_GET_POSTS_ERR', payload: { msg: err } });
                });
     }
 };

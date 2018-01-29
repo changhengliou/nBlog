@@ -47,17 +47,3 @@ export const getDateDiffByDay = (date1, date2) => {
     return diffDays;
 } 
 
-export const authCheckMiddleWare = (req, res, next) => {
-    var token = req.body._t || req.query._t;
-    if (isEmpty(token)) {
-        res.status(403).json({ msg: 'Unauthorized access.' });
-        return;
-    }
-    jwt.verify(token, Config.SERVER_SECRET, (err, token) => {
-        if (err) {
-            res.status(500).json({ msg: 'Something goes wrong' });
-            return;
-        }
-        next();
-    });
-}

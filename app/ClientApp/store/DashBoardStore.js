@@ -22,7 +22,7 @@ const emptyEditor = {
 export const actionCreators = {
     getMyPosts: () => (dispatch, getStore) => {
         dispatch({ type: 'DASHBOARD_GETUSER_POSTS_STARTED' });
-        request.get('/api/v1/post/')
+        request.get(`/api/v1/post?_t=${window.localStorage._t}`)
             .on('progress', e => dispatch({ type: 'DASHBOARD_PROGRESS_CHANGED', payload: e.percent }))
             .then(res => {
                 if (res.ok) {

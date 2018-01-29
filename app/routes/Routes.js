@@ -10,9 +10,6 @@ export const accountRoute = {
     updateUser: '/update/user/:userId',
 }
 
-export const authenticationMiddleware = (req, res, next) => {
-}
-
 const Routes = {
     Post: post,
     Account: account

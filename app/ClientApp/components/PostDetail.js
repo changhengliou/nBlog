@@ -74,7 +74,7 @@ class PostDetail extends React.Component {
                 <div className='form-group'>
                     <label>Leave a comment:</label>
                     <form onSubmit={ onCommentSubmit } action='/zzz' name='commentForm'>
-                        <textarea className='form-control input-sm' type='text' row='4'/>
+                        <textarea className='form-control input-sm' type='text' row='4' name='remark'/>
                         <div style={ { float: 'right', marginTop: '10px' } }>
                             <input type='button' 
                                    value='Submit'

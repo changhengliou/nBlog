@@ -1,11 +1,16 @@
 import request from 'supertest';
-import { init, app } from '../app/config/init';
 import express from 'express';
 
 describe('Router Accounts', () => {
     const _uid = 'test',
           _email = 'test@nblog.cc',
           _pwd = 'testpassword';
+    var app;
+
+    beforeEach(() => {
+        delete require.cache[require.resolve('../app/config/init').app];
+        app = require('../app/config/init').app;
+    });        
 
     it ('POST SIGNUP: /api/v1/account/', (done) => {
         request(app).post('/api/v1/account/signup')
@@ -77,6 +82,12 @@ describe('Router Accounts', () => {
 });
 
 describe('Router Posts', () => {
+    var app;
+    beforeEach(() => {
+        delete require.cache[require.resolve('../app/config/init').app];
+        app = require('../app/config/init').app;
+    });  
+
     it ('GET POSTS: /api/v1/post/', (done) => {
         request(app).get('/api/v1/post/')
                     .expect(res => {

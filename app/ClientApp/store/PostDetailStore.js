@@ -4,6 +4,7 @@ import request from 'superagent';
 import { stateToHTML } from 'draft-js-export-html';
 
 const defaultProps = {
+    _id: '',
     title: '',
     content: '',
     comments: [],
@@ -21,6 +22,7 @@ export const actionCreators = {
                .then(res => {
                     var { data } = JSON.parse(res.text);
                     dispatch({ type: 'POSTDETAIL_GET_POST_FINISHED', payload: {
+                        _id: _id,
                         title: data.title,
                         content: stateToHTML(convertFromRaw(JSON.parse(data.content))),
                         views: data.views,
@@ -35,8 +37,15 @@ export const actionCreators = {
                })
     },
     onCommentSubmit: (e) => (dispatch, getStore) => {
-        console.log(e);
         e.preventDefault();
+        request.post(`/api/v1/post/${getStore().postdetail._id}/comment`)
+               .send({
+                   _t: window.localStorage._t,
+                   remark: document.commentForm.remark.value,
+                   date: Date.now()
+               })
+               .then(res => res)
+               .catch(err => err);
     }
 };
 

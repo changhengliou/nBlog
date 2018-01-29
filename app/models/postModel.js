@@ -27,7 +27,7 @@ const postSchema = new Schema({
     },
     labels: Array,
     group: Array
-});
+}, { usePushEach: true });
 
 class PostAddOn {
 
