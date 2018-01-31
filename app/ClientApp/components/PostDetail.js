@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import * as PostDetailStore from '../store/PostDetailStore';
+import { getDateTimeString } from '../../utils/util';
 class PostDetail extends React.Component {
     constructor(props) {
         super(props);
@@ -40,12 +41,14 @@ class PostDetail extends React.Component {
     renderComments(comments) {
         if (comments.length == 0)
             return <div style={ { textAlign: 'center', marginBottom: '20px' } }>No comments yet...</div>
-        return comments.map(obj => {
+        return comments.map((obj, index) => {
             return (
-                <div>
-                    <h3>{ obj.author }</h3>
-                    <div>{ obj.remark }</div>
-                    <div>{ obj.date }</div>
+                <div key={index} style={ { padding: '4px 12px' } }>
+                    <strong>{ obj.author }</strong>
+                    <div>
+                        <p style={ { textOverflow: 'ellipsis', display: 'inline-block', width: '59%', overflow: 'auto' } }>{ obj.remark }</p>
+                        <div style={ { textOverflow: 'ellipsis', display: 'inline-block', float: 'right' } }>{ getDateTimeString(new Date(obj.date)) }</div>
+                    </div>
                 </div>
             );
         });

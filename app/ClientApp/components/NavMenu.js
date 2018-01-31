@@ -1,14 +1,33 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import { NavLink, Link, browserHistory } from 'react-router-dom';
-
+import jwt from 'jsonwebtoken';
 export class NavMenu extends React.Component {
     constructor(props, context) {
         super(props, context);
+        this.state = { urlText: 'Signin' };
     }
 
     static contextTypes = {
         router: PropTypes.object
+    }
+
+    componentWillMount() {
+        if (typeof window === 'object') {
+            var token = jwt.decode(window.localStorage._t);
+            if (token) {
+                this.setState({ urlText: 'SignOut', name: token.name });
+            }
+        }
+    }
+
+    componentWillUnmount() {
+        if (typeof window === 'object') {
+            if (jwt.decode(window.localStorage._t)) {
+                this.setState({ urlText: 'Signin' });
+                window.localStorage._t = null;
+            }
+        }
     }
 
     render() {
@@ -28,7 +47,7 @@ export class NavMenu extends React.Component {
                 <div className='navbar-collapse collapse'>
                     <ul className='nav navbar-nav'>
                         <li>
-                            <NavLink exact to={ '/changheng/me' } activeClassName='active'>
+                            <NavLink exact to={ `/${this.state.name}/me` } activeClassName='active'>
                                 <span className='glyphicon glyphicon-home'></span> Home
                             </NavLink>
                         </li>
@@ -45,13 +64,13 @@ export class NavMenu extends React.Component {
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink to={ '/admin' } activeClassName='active'>
+                            <NavLink exact strict to={ '/admin' } activeClassName='active'>
                                 <span className='glyphicon glyphicon-education'></span> Manage db
                             </NavLink>
                         </li>
                         <li>
                             <NavLink to={ '/signin' } activeClassName='active'>
-                                <span className='glyphicon glyphicon-th-list'></span> Signin
+                                <span className='glyphicon glyphicon-th-list'></span> { this.state.urlText }
                             </NavLink>
                         </li>
                     </ul>

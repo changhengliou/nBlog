@@ -17,3 +17,4 @@ export const goneResult = (res, err) => {
     console.log(err);
     res.status(410).json({ msg: 'Resource has been removed' });
 }
+

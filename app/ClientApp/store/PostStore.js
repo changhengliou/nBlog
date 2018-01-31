@@ -1,4 +1,7 @@
 import request from 'superagent';
+import {
+    push
+} from 'react-router-redux';
 
 const defaultProps = {
     msg: '',
@@ -6,16 +9,33 @@ const defaultProps = {
 }
 
 export const actionCreators = {
-    getPosts: (pg) => (dispatch, getStore) => { 
-        dispatch({ type: 'POST_GET_POSTS_STARTED' });
+    getPosts: (pg) => (dispatch, getStore) => {
+        dispatch({
+            type: 'POST_GET_POSTS_STARTED'
+        });
         request.get(`/api/v1/post?p=${pg}&_t=${window.localStorage._t}`)
-               .then(res => {
-                   var { data, msg } = JSON.parse(res.text);
-                   dispatch({ type: 'POST_GET_POSTS_FINISHED', payload: { posts: data } });
-               })
-               .catch(err => {
-                    dispatch({ type: 'POST_GET_POSTS_ERR', payload: { msg: err } });
-               });
+            .then(res => {
+                var {
+                    data,
+                    msg
+                } = JSON.parse(res.text);
+                dispatch({
+                    type: 'POST_GET_POSTS_FINISHED',
+                    payload: {
+                        posts: data
+                    }
+                });
+            })
+            .catch(err => {
+                if (err.status === 403)
+                    dispatch(push('signin'));
+                dispatch({
+                    type: 'POST_GET_POSTS_ERR',
+                    payload: {
+                        msg: err
+                    }
+                });
+            });
     }
 };
 
@@ -25,7 +45,9 @@ export const reducer = (state, action) => {
         case 'POST_GET_POSTS_STARTED':
         case 'POST_GET_POSTS_FINISHED':
         case 'POST_GET_POSTS_ERR':
-            return { ...state, ...action.payload };
+            return { ...state,
+                ...action.payload
+            };
         default:
             return defaultProps;
     }

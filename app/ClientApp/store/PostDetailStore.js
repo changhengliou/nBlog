@@ -1,7 +1,18 @@
-import { Action, Reducer } from 'redux';
-import { EditorState, convertFromRaw } from 'draft-js';
+import {
+    Action,
+    Reducer
+} from 'redux';
+import {
+    push
+} from 'react-router-redux';
+import {
+    EditorState,
+    convertFromRaw
+} from 'draft-js';
 import request from 'superagent';
-import { stateToHTML } from 'draft-js-export-html';
+import {
+    stateToHTML
+} from 'draft-js-export-html';
 
 const defaultProps = {
     _id: '',
@@ -17,35 +28,53 @@ const defaultProps = {
 export const actionCreators = {
     getPost: (_id) => (dispatch, getStore) => {
         var _t = window.localStorage._t || '';
-        dispatch({ type: 'POSTDETAIL_GET_POST_STARTED' });
+        dispatch({
+            type: 'POSTDETAIL_GET_POST_STARTED'
+        });
         request.get(`/api/v1/post/${_id}/edit?_t=${_t}`)
-               .then(res => {
-                    var { data } = JSON.parse(res.text);
-                    dispatch({ type: 'POSTDETAIL_GET_POST_FINISHED', payload: {
+            .then(res => {
+                var {
+                    data
+                } = JSON.parse(res.text);
+                dispatch({
+                    type: 'POSTDETAIL_GET_POST_FINISHED',
+                    payload: {
                         _id: _id,
                         title: data.title,
                         content: stateToHTML(convertFromRaw(JSON.parse(data.content))),
+                        comments: data.comments,
                         views: data.views,
                         likes: data.likes,
                         lastEditTime: data.lastEditTime,
                         status: ''
-                    } });
-               })
-               .catch(err => {
-                    console.log(err);
-                    dispatch({ type: 'POSTDETAIL_GET_POST_ERR', payload: { status: 'Failed to get the post' } });
-               })
+                    }
+                });
+            })
+            .catch(err => {
+                console.log(err);
+                if (err.status === 403)
+                    dispatch(push('/signin'));
+                dispatch({
+                    type: 'POSTDETAIL_GET_POST_ERR',
+                    payload: {
+                        status: 'Failed to get the post'
+                    }
+                });
+            })
     },
     onCommentSubmit: (e) => (dispatch, getStore) => {
         e.preventDefault();
         request.post(`/api/v1/post/${getStore().postdetail._id}/comment`)
-               .send({
-                   _t: window.localStorage._t,
-                   remark: document.commentForm.remark.value,
-                   date: Date.now()
-               })
-               .then(res => res)
-               .catch(err => err);
+            .send({
+                _t: window.localStorage._t,
+                remark: document.commentForm.remark.value,
+                date: Date.now()
+            })
+            .then(res => res)
+            .catch(err => {
+                if (err.status === 403)
+                    dispatch(push('/signin'));
+            });
     }
 };
 
@@ -54,9 +83,10 @@ export const reducer = (state, action) => {
         case 'POSTDETAIL_GET_POST_STARTED':
         case 'POSTDETAIL_GET_POST_FINISHED':
         case 'POSTDETAIL_GET_POST_ERR':
-            return { ...state, ...action.payload };
+            return { ...state,
+                ...action.payload
+            };
         default:
             return defaultProps;
     }
 };
-
