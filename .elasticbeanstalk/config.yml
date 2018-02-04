@@ -1,12 +1,12 @@
 branch-defaults:
   master:
-    environment: nblog
+    environment: nblog-dev
   post:
-    environment: nblog
+    environment: nblog-dev
 global:
-  application_name: nblog
+  application_name: nblog-dev
   branch: null
-  default_ec2_keyname: nblog
+  default_ec2_keyname: nblog-dev
   default_region: ap-northeast-1
   include_git_submodules: true
   instance_profile: null
