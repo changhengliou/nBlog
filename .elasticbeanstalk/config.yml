@@ -1,12 +1,11 @@
 branch-defaults:
-  master:
-    environment: nblog-dev
   post:
-    environment: nblog-dev
+    environment: nblog
 global:
-  application_name: nblog-dev
+  application_name: nblog
   branch: null
-  default_ec2_keyname: nblog-dev
+  default_ec2_keyname: nblog
+  default_platform: Docker 17.09.1-ce
   default_region: ap-northeast-1
   include_git_submodules: true
   instance_profile: null
