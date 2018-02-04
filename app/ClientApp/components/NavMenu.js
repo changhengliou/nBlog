@@ -2,6 +2,7 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import { NavLink, Link, browserHistory } from 'react-router-dom';
 import jwt from 'jsonwebtoken';
+
 export class NavMenu extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -16,6 +17,8 @@ export class NavMenu extends React.Component {
         if (typeof window === 'object') {
             var token = jwt.decode(window.localStorage._t);
             if (token) {
+                window.sessionStorage.name = token.name;
+                window.sessionStorage.email = token.email;
                 this.setState({ urlText: 'SignOut', name: token.name });
             }
         }
@@ -54,7 +57,10 @@ export class NavMenu extends React.Component {
                         <li>
                             <NavLink to={ '/post' } 
                                      activeClassName='active' 
-                                     isActive={ (a, b) => (b.pathname === '/' || a) ? true : false }>
+                                     isActive={ (a, b) => {
+                                        if (b.pathname.split('/')[1].length === 24) return true;
+                                        return (b.pathname === '/' || a) ? true : false;
+                                     } }>
                                 <span className='glyphicon glyphicon-th-list'></span> Posts
                             </NavLink>
                         </li>

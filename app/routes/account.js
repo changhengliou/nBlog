@@ -7,17 +7,6 @@ import { User } from '../models/accountModel';
 
 const router = express.Router();
 
-router.all('*', (req, res, next) => {
-    switch(req.path) {
-        case '/api/v1/account/exist':
-            // check if auth success?
-            next();
-            break;
-        default:
-            next();
-    }
-});
-
 /**
  * user signin
  * @param {string} userId @required

@@ -43,7 +43,7 @@ class DashBoard extends React.Component {
         return myPostData.map((obj, index) => 
             <MyPostRow _id={ obj._id }
                        title={ obj.title } 
-                       author={ obj.authors[0] }
+                       author={ obj.authors }
                        views={ obj.views } 
                        comments={ obj.comments }
                        likes={ obj.likes }

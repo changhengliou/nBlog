@@ -37,7 +37,7 @@ export const init = (app) => {
   });
   db.on('error', () => {
     console.log(`On mongodb connected error`);
-    // throw new Error(`Unable to connect to database at ${Config.CONNECTION_STRING}.`);
+    throw new Error(`Unable to connect to database at ${Config.CONNECTION_STRING}.`);
   });
 
   redisClient.on('connect', () => {

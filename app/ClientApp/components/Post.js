@@ -25,6 +25,8 @@ class Post extends React.Component {
                          excerpt={ obj.excerpt }
                          lastEditTime={ getDateDiffByDay(new Date(), new Date(obj.lastEditTime)) }
                          lastEditExactTime={ obj.lastEditTime }
+                         comments={ Array.isArray(obj.comments) ? obj.comments.length : 0 }
+                         views={ Number.isInteger(obj.views) ? obj.views : 0 }
                          _id={ obj._id }
                          key={ index }/>)
     }

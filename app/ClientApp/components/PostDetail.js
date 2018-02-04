@@ -42,12 +42,23 @@ class PostDetail extends React.Component {
         if (comments.length == 0)
             return <div style={ { textAlign: 'center', marginBottom: '20px' } }>No comments yet...</div>
         return comments.map((obj, index) => {
+            let btnDelete = typeof window === 'object' && obj.author === window.sessionStorage.name ? 
+                                <button className='btn btn-sm btn-primary' 
+                                        style={ { marginRight: '5px' } } 
+                                        data-id={`${obj._id}`}
+                                        onClick={ this.props.onRemoveComment }>
+                                    Remove
+                                </button> : 
+                                null;
             return (
                 <div key={index} style={ { padding: '4px 12px' } }>
                     <strong>{ obj.author }</strong>
                     <div>
                         <p style={ { textOverflow: 'ellipsis', display: 'inline-block', width: '59%', overflow: 'auto' } }>{ obj.remark }</p>
-                        <div style={ { textOverflow: 'ellipsis', display: 'inline-block', float: 'right' } }>{ getDateTimeString(new Date(obj.date)) }</div>
+                        <div style={ { textOverflow: 'ellipsis', display: 'inline-block', float: 'right' } }>
+                            { btnDelete }
+                            { getDateTimeString(new Date(obj.date)) }
+                        </div>
                     </div>
                 </div>
             );

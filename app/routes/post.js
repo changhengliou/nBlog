@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 import Config from '../config/config';
 import { Post } from '../models/postModel';
+import Service from '../services/postService';
 import { sendError, internalServerError } from '../utils/common';
 import { isNumber } from 'util';
 import { identityMiddleWare, authenticationMiddleware } from './middleware';
@@ -12,7 +13,7 @@ const router = express.Router();
 const POSTS_PER_PAGE = 30;
 
 router.all('*', identityMiddleWare);
-router.all(['/', '/:postId/edit', '/create', '/:postId/remove'], authenticationMiddleware);
+router.all(['/:postId/edit', '/create', '/:postId/remove'], authenticationMiddleware);
 /**
  * get all posts
  * @param {number} p number of page
@@ -23,30 +24,8 @@ router.get('/', (req, res, next) => {
     var { p } = req.query;
     if (!isNumber(p) || p < 0)
         p = 0;
-    Post.aggregate([ 
-        { $limit: POSTS_PER_PAGE },
-        { $skip: p * POSTS_PER_PAGE },
-        { $sort: { lastEditTime: -1 } },
-        { $lookup: { from: "users", localField: "author", foreignField: "_id", as: "authors" } },
-        {
-            $project: {
-                _id: 1,
-                title: 1,
-                excerpt: 1,
-                group: 1,
-                labels: 1,
-                likes: 1,
-                viewsBy: 1,
-                views: 1,
-                comments: 1,
-                "authors._id": 1,
-                "authors.name": 1,
-                "authors.email": 1,
-                lastEditTime: { $dateToString: { format: "%Y-%m-%d %H:%M:%S", date: "$lastEditTime", timezone: "+08:00" } }
-            }
-        } ])
-        .then(s => {
-            console.log(res.locals);
+        Service.getPosts(10, 0).then(s => {
+            console.log(s);
             res.send({ data: s });
         })
         .catch(err => {
@@ -60,7 +39,7 @@ router.get('/', (req, res, next) => {
 router.get('/:postId/edit', (req, res, next) => {
     var { postId } = req.params;
     
-    Post.findById(postId).lean().exec().then(s => {
+    Service.getPostById(postId, true).then(s => {
         res.send({ data: s });
     }).catch(err => {
         console.log(err);
@@ -77,24 +56,18 @@ router.post('/create', (req, res) => {
         res.status(400).json({ msg: 'Invalid form.' });
         return;
     }
-    jwt.verify(_t, Config.SERVER_SECRET, (err, object) => {
-        if (err) {
-            res.status(403).json({ msg: err });
-            return;
-        }
         
-        var post = new Post({
-                title: title,
-                excerpt: excerpt,
-                content: JSON.stringify(editorState),
-                author: object._id
-            });
-            post.save()
-                .then(obj => {
-                    res.json({ msg: `Successfully save the post, id = ${obj._id}`});
-                })
-                .catch(err => sendError(res, err, 'Failed to save your post.'));
+    var post = new Post({
+        title: title,
+        excerpt: excerpt,
+        content: JSON.stringify(editorState),
+        author: res.locals.auth._id
     });
+    post.save()
+        .then(obj => {
+            res.json({ msg: `Successfully save the post, id = ${obj._id}`});
+        })
+        .catch(err => sendError(res, err, 'Failed to save your post.'));
 });
 
 /**
@@ -103,11 +76,8 @@ router.post('/create', (req, res) => {
 router.post('/:postId/edit', (req, res, next) => {
     var { postId } = req.params,
         { title, excerpt, editorState, _t } = req.body; 
-    
-    Post.findById(postId)
-        .populate('author')
-        .select('_id title excerpt content lastEditeTime views author._id author.name')
-        .exec()
+
+    Service.getPostById(postId, false)
         .then(obj => {
             obj.title = title;
             obj.excerpt = excerpt;
@@ -193,12 +163,15 @@ router.put('/:postId/comment/:commentId', (req, res, next) => {
  */
 router.delete('/:postId/comment/:commentId', (req, res, next) => {
     var { postId, commentId } = req.params;
-    Post.findById(postId)
-        .update({ _id: postId }, { $pullAll: { _id: [commentId] } })
+    Post.update({ '_id': postId }, { $pull : { 
+            'comments' : { 
+                _id: mongoose.mongo.ObjectId(commentId) 
+            } 
+        } })
         .lean()
         .exec()
-        .then(obj => res.json({ msg: 'Success' }))
-        .catch(err => res.status(500).json({ msg: 'Failed' }));
+        .then(obj => res.json({ msg: 'Success', obj }))
+        .catch(err => res.status(500).json({ msg: 'Failed', err: err }));
 });
 
 export default (app) => app.use('/api/v1/post', router);
