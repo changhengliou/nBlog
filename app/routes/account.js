@@ -19,7 +19,7 @@ router.post('/signin', (req, res) => {
     var { userId, userPwd } = req.body,
         _pwd = gethash(userPwd);
 
-    if (isEmpty(userId) || isEmpty(userPwd)) {
+        if (isEmpty(userId) || isEmpty(userPwd)) {
         res.status(400).json({ msg: 'Invalid form' });
         return;
     }

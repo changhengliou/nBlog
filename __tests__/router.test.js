@@ -15,7 +15,6 @@ import {
     convertFromRaw
 } from 'draft-js';
 
-
 describe('Router Test', () => {
     const __blocks__ = convertFromHTML('<b>Bold text</b>, <i>Italic text</i><br/ ><br />' +
             '<a href="http://www.facebook.com">Example link</a>'),
@@ -65,14 +64,23 @@ describe('Router Test', () => {
         }
     var app;
 
-    beforeAll(() => {
-        delete require.cache[require.resolve('../app/config/init').app];
-        app = require('../app/config/init').app;
+    beforeAll(() => new Promise((resolve, reject) => {
+        require('../app/config/init').app.then(res => {
+            delete require.cache[require.resolve('../app/config/init').app];
+            app = res;
+            resolve();
+            console.log('beforeAll')
+        })
+    }));
+
+    afterAll(() => {
         removeAll(User);
         removeAll(Post);
-    });
+        console.log('afterAll')
+    })
 
     it('POST SIGNUP: /api/v1/account/', (done) => {
+        console.log('post signup start')
         request(app).post('/api/v1/account/signup')
             .send({
                 userName: _uid,
@@ -87,12 +95,15 @@ describe('Router Test', () => {
                 } = res.body;
                 expect(userName).toBe(_uid.toUpperCase());
                 expect(token).toBeDefined();
+                console.log('post signup stop')
+
             })
             .expect(200)
             .end(done);
     });
 
     it('POST SIGNIN BY ID: /api/v1/account/', (done) => {
+        console.log('post signin start')
         signIn(res => {
                 var {
                     _id,
@@ -104,11 +115,13 @@ describe('Router Test', () => {
                 expect(userName).toBe(_uid.toUpperCase());
                 expect(emailAddr).toBe(_email.toUpperCase());
                 expect(token).toBeDefined();
+                console.log('post signin stop')
                 done();
             });
     });
 
     it('GET EXIST: /api/v1/account/', (done) => {
+        console.log('GET EXIST')
         request(app).get('/api/v1/account/exist')
             .send({
                 em: _email,
@@ -126,6 +139,7 @@ describe('Router Test', () => {
 
     it('CREATE POSTS /api/v1/post/create/', (done) => {
         // create post without login, expect to get 403
+        console.log('CREATE POSTS')
         request(app).post('/api/v1/post/create')
             .then(res => {
                 expect(res.status).toEqual(403);
@@ -159,6 +173,7 @@ describe('Router Test', () => {
     });
     
     it('GET POSTS /api/v1/post/', (done) => {
+        console.log('GET POSTS')
         getPosts(res => {
                 var { status, body } = res,
                     _data = body.data[0];

@@ -32,7 +32,7 @@ export const actionCreators = {
         dispatch({
             type: 'DASHBOARD_GETUSER_POSTS_STARTED'
         });
-        request.get(`/api/v1/post?_t=${window.localStorage._t}`)
+        request.get(`/api/v1/post?_t=${window.localStorage._t}&who=${window.localStorage._id}`)
             .on('progress', e => dispatch({
                 type: 'DASHBOARD_PROGRESS_CHANGED',
                 payload: e.percent
@@ -118,11 +118,13 @@ export const actionCreators = {
                         editorMsg: 'Successfully publish the post!'
                     }
                 });
-                var {
-                    data,
-                    msg
-                } = JSON.parse(res.text);
-                console.log(data, msg);
+                var { data } = JSON.parse(res.text);
+                dispatch({
+                    type: 'DASHBOARD_GETUSER_POSTS_FINISHED',
+                    payload: {
+                        myPostData: data
+                    }
+                });
             })
             .catch(err => {
                 if (err.status === 403)
@@ -151,13 +153,15 @@ export const actionCreators = {
         dispatch({
             type: 'DASHBOARD_DISCARD_STARTED'
         });
-        request.del(`/api/v1/post/${_id}/remove`)
+        request.del(`/api/v1/post/${_id}/remove?_t=${window.localStorage._t}`)
             .then(res => {
+                var { data } = JSON.parse(res.text);
                 dispatch({
                     type: 'DASHBOARD_DISCARD_FINISHED',
                     payload: {
                         editorMsg: 'Successfully remove the post.',
-                        ...emptyEditor
+                        ...emptyEditor,
+                        myPostData: data
                     }
                 });
             })
@@ -212,7 +216,7 @@ export const actionCreators = {
         dispatch({
             type: 'DASHBOARD_GET_EDIT_POST_STARTED'
         });
-        request.get(`/api/v1/post/${_id}/edit`)
+        request.get(`/api/v1/post/${_id}/edit?_t=${window.localStorage._t}`)
             .then(res => {
                 var {
                     data

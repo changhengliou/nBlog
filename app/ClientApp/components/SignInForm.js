@@ -46,9 +46,12 @@ class SignInForm extends React.Component {
         request.post('/api/v1/account/signin')
                 .send({userId: userId.value, userPwd: userPwd.value})
                 .then((res) => {
-                    var { userName, token } = JSON.parse(res.text);
+                    var { _id, userName, emailAddr, token } = JSON.parse(res.text);
                     if (res.ok) {
                         window.localStorage._t = token;
+                        window.localStorage._id = _id;
+                        window.localStorage.userName = userName;
+                        window.localStorage.email = emailAddr;
                         this.setState({ isSignIn: true, userName: userName });
                     }
                 })

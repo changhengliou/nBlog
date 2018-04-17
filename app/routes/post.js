@@ -13,7 +13,7 @@ const router = express.Router();
 const POSTS_PER_PAGE = 30;
 
 router.all('*', identityMiddleWare);
-router.all(['/:postId/edit', '/create', '/:postId/remove'], authenticationMiddleware);
+router.all(['/', '/:postId/edit', '/create', '/:postId/remove'], authenticationMiddleware);
 /**
  * get all posts
  * @param {number} p number of page
@@ -21,16 +21,16 @@ router.all(['/:postId/edit', '/create', '/:postId/remove'], authenticationMiddle
  * @param {string} _t client token
  */
 router.get('/', (req, res, next) => {
-    var { p } = req.query;
+    var { p, who } = req.query;
     if (!isNumber(p) || p < 0)
         p = 0;
-        Service.getPosts(10, 0).then(s => {
-            console.log(s);
-            res.send({ data: s });
-        })
-        .catch(err => {
-            internalServerError(res, err, msg = 'Failed to get posts');
-        });
+    Service.getPosts(who, 10, 0).then(s => {
+        console.log(s);
+        res.send({ data: s });
+    })
+    .catch(err => {
+        internalServerError(res, err, msg = 'Failed to get posts');
+    });
 });
 
 /**
@@ -65,7 +65,12 @@ router.post('/create', (req, res) => {
     });
     post.save()
         .then(obj => {
-            res.json({ msg: `Successfully save the post, id = ${obj._id}`});
+            Service.getPosts(res.locals.auth._id, 10, 0).then(s => {
+                res.send({ data: s });
+            })
+            .catch(err => {
+                internalServerError(res, err, msg = 'Failed to get posts');
+            });
         })
         .catch(err => sendError(res, err, 'Failed to save your post.'));
 });
@@ -102,7 +107,12 @@ router.post('/:postId/edit', (req, res, next) => {
 router.delete('/:postId/remove', (req, res, next) => {
     var { postId } = req.params;
     Post.findByIdAndRemove(postId).then(obj => {
-        res.json({ msg: 'Success', obj: obj });
+        Service.getPosts(res.locals.auth._id, 10, 0).then(s => {
+            res.send({ data: s });
+        })
+        .catch(err => {
+            internalServerError(res, err, msg = 'Failed to get posts');
+        });
     })
     .catch(err => {
         console.log(err);

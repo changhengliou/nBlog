@@ -5,6 +5,7 @@
     "scripts": {
         "start": "nodemon ./app/app.js",
         "test": "jest --forceExit",
+        "cov": "jest --coverage --forceExit",
         "dev": "$(npm bin)/nodemon ./app/app.js --exec $(npm bin)/babel-node ./app/app.js",
         "build": "webpack --config=webpack.config.vendor.js --env.prod && webpack --config=webpack.config.js --env.prod",
         "buildCli": "webpack --config=webpack.config.js",

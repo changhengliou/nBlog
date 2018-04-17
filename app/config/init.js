@@ -14,31 +14,35 @@ import process from 'process';
 
 const rootPath = path.join(__dirname, '../');
 
-export const init = (app) => {
+export const init = async (app) => {
   const redisClient = redis.createClient({
     host: Config.REDIS_HOST,
     port: Config.REDIS_PORT,
   });
 
+  const db = mongoose.connection;
   mongoose.Promise = global.Promise; // a work around to make deprecation warning disappear
-  mongoose.connect(Config.CONNECTION_STRING, {
-    useMongoClient: true,
-    autoIndex: true,
-    poolSize: 10,
-    promiseLibrary: global.Promise // this line seems not working
+  var promise = () => new Promise((resolve, reject) => {
+    mongoose.connect(Config.CONNECTION_STRING, {
+      useMongoClient: true,
+      autoIndex: true,
+      poolSize: 10,
+      promiseLibrary: global.Promise // this line seems not working
+    });
+    db.on('connected', () => {
+      console.log(`Connect to mongodb at ${Config.CONNECTION_STRING}`)
+      resolve();
+    });
+    db.on('disconnected', function () {
+      console.log('On mongodb disconnected');
+    });
+    db.on('error', () => {
+      console.log(`On mongodb connected error`);
+      throw new Error(`Unable to connect to database at ${Config.CONNECTION_STRING}.`);
+    });
   });
 
-  const db = mongoose.connection;
-  db.on('connected', () => 
-    console.log(`Connect to mongodb at ${Config.CONNECTION_STRING}`)
-  );
-  db.on('disconnected', function() {
-    console.log('On mongodb disconnected');
-  });
-  db.on('error', () => {
-    console.log(`On mongodb connected error`);
-    throw new Error(`Unable to connect to database at ${Config.CONNECTION_STRING}.`);
-  });
+  await promise();
 
   redisClient.on('connect', () => {
     console.log(`Connect to redis server at port ${Config.REDIS_PORT}`);
@@ -48,16 +52,18 @@ export const init = (app) => {
   });
 
   app.engine('handlebars', handlebars({
-               defaultLayout: 'layout',
-               extname: '.handlebars',
-               layoutsDir: path.join(rootPath, 'views', 'layout'),
-               partialsDir: path.join(rootPath, 'views', 'partial')
-             }));
+    defaultLayout: 'layout',
+    extname: '.handlebars',
+    layoutsDir: path.join(rootPath, 'views', 'layout'),
+    partialsDir: path.join(rootPath, 'views', 'partial')
+  }));
   app.set('views', path.join(rootPath, 'views'));
   app.set('view engine', 'handlebars');
 
   app.use(bodyParser.json());
-  app.use(express.urlencoded({extended: true}));
+  app.use(express.urlencoded({
+    extended: true
+  }));
   app.use(cookieParser());
   app.use(express.static(path.join(rootPath, 'wwwroot')));
 
@@ -87,9 +93,16 @@ export const init = (app) => {
 
   app.use((err, req, res, next) => {
     res.status(err.status || 500);
-    res.render('error', {helpers: {statusCode: err.status, errorMsg: err}});
+    res.render('error', {
+      helpers: {
+        statusCode: err.status,
+        errorMsg: err
+      }
+    });
   });
   return app;
 }
 
 export const app = init(express());
+// init(express()).then(res => 
+//   module.exports = res);

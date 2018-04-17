@@ -1,14 +1,15 @@
-import mongoose from 'mongoose';
+import mongoose, { mongo } from 'mongoose';
 import { Post } from '../models/postModel';
 
 export default class PostService {
     /**
+     * @param {string} who - user id
      * @param {number} limit - number of articles showed in one page 
      * @param {number} page - the number of page displayed now
      * @returns {Promise} 
      */
-    static getPosts(limit, page) {
-        return Post.aggregate([ 
+    static getPosts(who, limit, page) {
+        var query = [ 
             { $limit: limit },
             { $skip: page * limit },
             { $sort: { lastEditTime: -1 } },
@@ -28,8 +29,11 @@ export default class PostService {
                     author: "$authors",
                     lastEditTime: { $dateToString: { format: "%Y-%m-%d %H:%M:%S", date: "$lastEditTime", timezone: "+08:00" } }
                 }
-            } ])
-            .exec()
+            } ];
+        if (who) {
+            query.unshift({ $match: { "author" : mongoose.mongo.ObjectId(who) } });
+        }
+        return Post.aggregate(query).exec();
     }
 
     /**
